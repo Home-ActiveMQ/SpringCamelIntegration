@@ -1,5 +1,6 @@
 package com.mkyong;
 
+import com.mkyong.config.properties.ClientMessageProperties;
 import com.mkyong.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -8,10 +9,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @SpringBootApplication
 public class SpringBootConsoleApplication implements CommandLineRunner {
 
     private static final Logger LOGGER = LogManager.getLogger(SpringBootConsoleApplication.class);
+
+    private AtomicInteger deliveredMessages;
+    private AtomicInteger lostMessages;
+
+    @Autowired
+    private ClientMessageProperties clientMessageProperties;
 
     @Autowired
     private MessageService messageService;
@@ -27,16 +36,26 @@ public class SpringBootConsoleApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
-        for (int message = 1; message <= 20; message++) new Thread(taskSendMessage(message)).start();
+    public void run(String... args) throws InterruptedException {
+        deliveredMessages = new AtomicInteger();
+        lostMessages = new AtomicInteger();
+        for (int message = 1; message <= clientMessageProperties.getSentMessages(); message++) new Thread(taskSendMessage(message)).start();
+
+        Thread.sleep(10000);
+        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {}       DELIVERED MESSAGES = {}       LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", clientMessageProperties.getSentMessages(), deliveredMessages, lostMessages);
     }
 
     private Runnable taskSendMessage(Object message) {
         return () -> {
                 LOGGER.debug(" >>|  {}", message);
             String response = messageService.sendMessage("" + message + "");
-            if (response!=null) LOGGER.debug("|<<   {}", response);
-            else LOGGER.error("|<<   {}", response);
+            if (response!=null) {
+                LOGGER.debug("|<<   {}", response);
+                deliveredMessages.incrementAndGet();
+            } else {
+                LOGGER.error("|<<   {}", response);
+                lostMessages.incrementAndGet();
+            }
         };
     }
 }

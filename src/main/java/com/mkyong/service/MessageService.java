@@ -5,12 +5,14 @@ import org.apache.camel.CamelExecutionException;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import javax.jms.JMSException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Service
+@ConfigurationProperties("messageService")
 public class MessageService {
 
     private static final Logger LOGGER = LogManager.getLogger(MessageService.class);
@@ -18,9 +20,29 @@ public class MessageService {
 	@Autowired
 	private CamelContext camelContext;
 
+	private String requestTimeout;
+
+	private String timeToLive;
+
 //	@Autowired
 //	@Qualifier("producerTemplate")
 //	private ProducerTemplate producerTemplate;
+
+	public String getRequestTimeout() {
+		return requestTimeout;
+	}
+
+	public void setRequestTimeout(String requestTimeout) {
+		this.requestTimeout = requestTimeout;
+	}
+
+	public String getTimeToLive() {
+		return timeToLive;
+	}
+
+	public void setTimeToLive(String timeToLive) {
+		this.timeToLive = timeToLive;
+	}
 
 	public String sendMessage(String message) {
 		try {
@@ -34,6 +56,6 @@ public class MessageService {
 
 	private <T> T inOut(T message) throws JMSException {
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-		return (T) producerTemplate.requestBody("jms:queue:message?exchangePattern=InOut&requestTimeout=5000&timeToLive=5000", message);
+		return (T) producerTemplate.requestBody("jms:queue:message?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&timeToLive=" + timeToLive, message);
 	}
 }
