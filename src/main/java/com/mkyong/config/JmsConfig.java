@@ -30,9 +30,6 @@ public class JmsConfig {
     @Value("${jmsConfiguration.concurrentConsumers:1}")
     private int concurrentConsumers;
 
-    @Value("${jmsConfiguration.maxConcurrentConsumers:1}")
-    private int maxConcurrentConsumers;
-
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerURL);
@@ -56,7 +53,6 @@ public class JmsConfig {
         JmsConfiguration jmsConfiguration = new JmsConfiguration();
         jmsConfiguration.setConnectionFactory(pooledConnectionFactory());
         jmsConfiguration.setConcurrentConsumers(concurrentConsumers);
-        jmsConfiguration.setMaxConcurrentConsumers(maxConcurrentConsumers);
         jmsConfiguration.setTransacted(false);
         return jmsConfiguration;
     }
