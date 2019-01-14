@@ -10,7 +10,7 @@ Spring Boot with Camel ActiveMQ JMS Example - Java AutoConfiguration
   * https://github.com/chaitanya525/blog
 * https://www.youtube.com/watch?v=B-Q_InvRvn0
 
-
+* `TemporaryQueueReplyManager` ( https://johnragan.wordpress.com/2010/01/11/jms-implementing-the-requestreply-pattern-and-other-newbie-practice-runs )
 
 НОРМАЛЬНО-1
 ---------
