@@ -45,10 +45,10 @@ public class SpringBootConsoleApplication implements CommandLineRunner {
         lostMessages = new AtomicInteger();
         for (int message = 1; message <= clientMessageProperties.getSentMessages(); message++) {
             new Thread(taskSendMessage(message)).start();
-            allLostMessages.add("" + message);
+            synchronized (allLostMessages) { allLostMessages.add("" + message); }
         }
 
-        Thread.sleep(10000);
+        Thread.sleep(clientMessageProperties.getAllResponseDelay());
         LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {}       DELIVERED MESSAGES = {}       LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", clientMessageProperties.getSentMessages(), deliveredMessages, lostMessages);
         LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
     }
@@ -60,7 +60,7 @@ public class SpringBootConsoleApplication implements CommandLineRunner {
             if (response!=null) {
                 LOGGER.debug("|<<   {}", response);
                 deliveredMessages.incrementAndGet();
-                allLostMessages.remove(response);
+                synchronized (allLostMessages) { allLostMessages.remove(response); }
             } else {
                 LOGGER.error("|<<   {}", response);
                 lostMessages.incrementAndGet();

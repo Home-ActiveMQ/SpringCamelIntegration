@@ -11,6 +11,8 @@ public class ClientMessageProperties {
 
     private int responseDelay;
 
+    private int allResponseDelay;
+
     public int getSentMessages() {
         return sentMessages;
     }
@@ -25,5 +27,13 @@ public class ClientMessageProperties {
 
     public void setResponseDelay(int responseDelay) {
         this.responseDelay = responseDelay;
+    }
+
+    public int getAllResponseDelay() {
+        return allResponseDelay;
+    }
+
+    public void setAllResponseDelay(int allResponseDelay) {
+        this.allResponseDelay = allResponseDelay;
     }
 }
