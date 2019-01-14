@@ -67,3 +67,21 @@ messageService.timeToLive = 5000
 clientMessage.sentMessages = 15
 clientMessage.responseDelay = 3000
 
+
+НОРМАЛЬНО-4
+---------
+
+# JMS
+activeMQConnectionFactory.brokerURL = vm://localhost?broker.persistent=false
+pooledConnectionFactory.maxConnections = 100
+pooledConnectionFactory.maximumActiveSessionPerConnection = 50
+jmsConfiguration.concurrentConsumers = 50
+
+# SERVICE MESSAGE
+messageService.requestTimeout = 5000
+messageService.timeToLive = 5000
+
+# CLIENT MESSAGE
+clientMessage.sentMessages = 49
+clientMessage.responseDelay = 3000
+
