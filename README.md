@@ -9,3 +9,23 @@ Spring Boot with Camel ActiveMQ JMS Example - Java AutoConfiguration
 * https://dzone.com/articles/how-to-integrate-spring-boot-and-apache-camel
   * https://github.com/chaitanya525/blog
 * https://www.youtube.com/watch?v=B-Q_InvRvn0
+
+
+
+НОРМАЛЬНО
+---------
+
+# JMS
+activeMQConnectionFactory.brokerURL = vm://localhost?broker.persistent=false
+pooledConnectionFactory.maxConnections = 15
+pooledConnectionFactory.maximumActiveSessionPerConnection = 10
+jmsConfiguration.concurrentConsumers = 10
+jmsConfiguration.maxConcurrentConsumers = 20
+
+# SERVICE MESSAGE
+messageService.requestTimeout = 5000
+messageService.timeToLive = 5000
+
+# CLIENT MESSAGE
+clientMessage.sentMessages = 7
+clientMessage.responseDelay = 3000

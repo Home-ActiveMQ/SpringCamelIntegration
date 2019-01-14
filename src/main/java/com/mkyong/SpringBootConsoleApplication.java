@@ -8,7 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SpringBootApplication
@@ -17,7 +18,10 @@ public class SpringBootConsoleApplication implements CommandLineRunner {
     private static final Logger LOGGER = LogManager.getLogger(SpringBootConsoleApplication.class);
 
     private AtomicInteger deliveredMessages;
+
     private AtomicInteger lostMessages;
+
+    static List<String> allLostMessages = new ArrayList<>();
 
     @Autowired
     private ClientMessageProperties clientMessageProperties;
@@ -39,19 +43,24 @@ public class SpringBootConsoleApplication implements CommandLineRunner {
     public void run(String... args) throws InterruptedException {
         deliveredMessages = new AtomicInteger();
         lostMessages = new AtomicInteger();
-        for (int message = 1; message <= clientMessageProperties.getSentMessages(); message++) new Thread(taskSendMessage(message)).start();
+        for (int message = 1; message <= clientMessageProperties.getSentMessages(); message++) {
+            new Thread(taskSendMessage(message)).start();
+            allLostMessages.add("" + message);
+        }
 
         Thread.sleep(10000);
         LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {}       DELIVERED MESSAGES = {}       LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", clientMessageProperties.getSentMessages(), deliveredMessages, lostMessages);
+        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
     }
 
     private Runnable taskSendMessage(Object message) {
         return () -> {
                 LOGGER.debug(" >>|  {}", message);
-            String response = messageService.sendMessage("" + message + "");
+            String response = messageService.sendMessage("" + message);
             if (response!=null) {
                 LOGGER.debug("|<<   {}", response);
                 deliveredMessages.incrementAndGet();
+                allLostMessages.remove(response);
             } else {
                 LOGGER.error("|<<   {}", response);
                 lostMessages.incrementAndGet();
