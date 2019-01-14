@@ -9,6 +9,7 @@ Spring Boot with Camel ActiveMQ JMS Example - Java AutoConfiguration
 * https://dzone.com/articles/how-to-integrate-spring-boot-and-apache-camel
   * https://github.com/chaitanya525/blog
 * https://www.youtube.com/watch?v=B-Q_InvRvn0
+* `Spring Boot Embedded ActiveMQ Configuration` https://memorynotfound.com/spring-boot-embedded-activemq-configuration-example
 
 * `TemporaryQueueReplyManager` ( https://johnragan.wordpress.com/2010/01/11/jms-implementing-the-requestreply-pattern-and-other-newbie-practice-runs )
 
