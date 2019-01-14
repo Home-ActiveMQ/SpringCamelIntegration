@@ -5,7 +5,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import static com.mkyong.util.JmsUtil.JMS_QUEUE;
+import static com.mkyong.util.JmsUtil.JMS;
 
 @Component
 public class MessageRoutes extends RouteBuilder {
@@ -18,7 +18,7 @@ public class MessageRoutes extends RouteBuilder {
 
 	@Override
 	public void configure() throws Exception {
-		from(JMS_QUEUE + "message?concurrentConsumers=" + concurrentConsumers)
+		from(JMS + ":queue:message?concurrentConsumers=" + concurrentConsumers)
 				.routeId("message")
 				.process(messageProcessor);
 	}

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import static com.mkyong.util.JmsUtil.JMS;
 
 @Configuration
 public class JmsConfig {
@@ -60,7 +61,7 @@ public class JmsConfig {
     @Bean
     public CamelContext camelContext() throws Exception {
         CamelContext camelContext = new DefaultCamelContext();
-        camelContext.addComponent("jms", JmsComponent.jmsComponentAutoAcknowledge(pooledConnectionFactory()));
+        camelContext.addComponent(JMS, JmsComponent.jmsComponentAutoAcknowledge(pooledConnectionFactory()));
         camelContext.addRoutes(messageRoutes);
         camelContext.start();
         return camelContext;

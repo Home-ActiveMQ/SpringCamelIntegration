@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.jms.JMSException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static com.mkyong.util.JmsUtil.JMS_QUEUE;
+import static com.mkyong.util.JmsUtil.JMS;
 
 @Service
 @ConfigurationProperties("messageService")
@@ -57,6 +57,6 @@ public class MessageService {
 
 	private <T> T inOut(T message) throws JMSException {
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-		return (T) producerTemplate.requestBody(JMS_QUEUE + "message?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&timeToLive=" + timeToLive, message);
+		return (T) producerTemplate.requestBody(JMS + ":queue:message?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&timeToLive=" + timeToLive, message);
 	}
 }
