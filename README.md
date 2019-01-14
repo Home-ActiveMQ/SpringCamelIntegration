@@ -12,7 +12,7 @@ Spring Boot with Camel ActiveMQ JMS Example - Java AutoConfiguration
 
 
 
-НОРМАЛЬНО
+НОРМАЛЬНО-1
 ---------
 
 # JMS
@@ -28,4 +28,23 @@ messageService.timeToLive = 5000
 
 # CLIENT MESSAGE
 clientMessage.sentMessages = 7
+clientMessage.responseDelay = 3000
+
+
+НОРМАЛЬНО-2
+---------
+
+# JMS
+activeMQConnectionFactory.brokerURL = vm://localhost?broker.persistent=false
+pooledConnectionFactory.maxConnections = 100
+pooledConnectionFactory.maximumActiveSessionPerConnection = 15
+jmsConfiguration.concurrentConsumers = 10
+jmsConfiguration.maxConcurrentConsumers = 20
+
+# SERVICE MESSAGE
+messageService.requestTimeout = 5000
+messageService.timeToLive = 5000
+
+# CLIENT MESSAGE
+clientMessage.sentMessages = 10
 clientMessage.responseDelay = 3000
