@@ -13,6 +13,11 @@ Spring Boot with Camel ActiveMQ JMS Example - Java AutoConfiguration
 
 * `TemporaryQueueReplyManager` ( https://johnragan.wordpress.com/2010/01/11/jms-implementing-the-requestreply-pattern-and-other-newbie-practice-runs )
 
+* `WildFly Camel User Guide` https://wildfly-extras.github.io/wildfly-camel/
+* `Camel в вопросах и ответах` https://habr.com/company/redhatrussia/blog/352188/
+
+
+
 НОРМАЛЬНО-1
 ---------
 
@@ -158,4 +163,35 @@ messageService.timeToLive = 0
 clientMessage.sentMessages = 500
 clientMessage.responseDelay = 3000
 clientMessage.allResponseDelay = 25000
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+* `camelExchangeExample` https://examples.javacodegeeks.com/enterprise-java/apache-camel/apache-camel-exchange-example/
+* `Apache Camel Hello World example` https://examples.javacodegeeks.com/enterprise-java/apache-camel/apache-camel-hello-world-example/
+* `Camel ProducerTemplate and ConsumerTemplate Example` http://www.pretechsol.com/2013/10/camel-producertemplate-and_70.html
+* `Spring JMS Example + ActiveMQ + Annotation/JavaConfig` https://www.devglan.com/spring-mvc/spring-jms-activemq-integration-example
+* `Tutorial on Spring Remoting with JMS` http://people.apache.org/~dkulp/camel/tutorial-jmsremoting.html
+* `How to start Apache Camel: Message Router with Spring Boot` https://grokonez.com/java-integration/start-apache-camel-message-router-spring-boot
+* `How to test Apache Camel JMS routes with Spring and ActiveMQ step by step` https://medium.com/@mzimecki/how-to-test-apache-camel-jms-routes-with-spring-and-activemq-step-by-step-f429760074e6
+* `Apache Camel ActiveMQ Example` https://examples.javacodegeeks.com/enterprise-java/apache-camel/apache-camel-activemq-example/
+* `camel-jms` https://github.com/apache/camel/blob/master/components/camel-jms/src/test/java/org/apache/camel/component/jms/JmsInOutDisableTimeToLiveTest.java
+* `Поддерживает ли Apache Camel использование подстановочных знаков activemq` https://stackoverrun.com/ru/q/6947598
+* `IntelliJ Debug Configuration - Debugging Your Scala Application` http://allaboutscala.com/tutorials/chapter-1-getting-familiar-intellij-ide/intellij-debug-configuration-scala-application/
+                                                                    https://github.com/Home-SCALA/allaboutscala
+                                                                    https://github.com/nadimbahadoor/allaboutscala
+* `Your first Scala Hello World application` http://allaboutscala.com/tutorials/chapter-1-getting-familiar-intellij-ide/scala-tutorial-first-hello-world-application/
+
+
+
+
+
+
+
+
+
+
+
+
 
