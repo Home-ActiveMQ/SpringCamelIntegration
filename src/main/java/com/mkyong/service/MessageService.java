@@ -57,6 +57,6 @@ public class MessageService {
 
 	private <T> T inOut(T message) throws JMSException {
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-		return (T) producerTemplate.requestBody(JMS + ":queue:message?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&timeToLive=" + timeToLive, message);
+		return (T) producerTemplate.requestBody(JMS + ":test1:queue?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&timeToLive=" + timeToLive, message);
 	}
 }
