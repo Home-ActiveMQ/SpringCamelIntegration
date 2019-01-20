@@ -9,9 +9,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Component
-public class MessageProcessor implements Processor {
+public class Test1Processor implements Processor {
 
-	private static final Logger LOGGER = LogManager.getLogger(MessageProcessor.class);
+	private static final Logger LOGGER = LogManager.getLogger(Test1Processor.class);
 
 	@Autowired
 	private ClientMessageProperties clientMessageProperties;
