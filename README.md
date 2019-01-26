@@ -1,6 +1,9 @@
 
 * `spring-boot-starter` https://www.mkyong.com/spring-boot/spring-boot-non-web-application-example
 * `Log4j2 xml configuration example` https://howtodoinjava.com/log4j2/log4j-2-xml-configuration-example
+* `changing-date-format-in-log4j` http://logging.apache.org/log4j/2.x/manual/layouts.html `https://stackoverflow.com/questions/21979606/changing-date-format-in-log4j-xml`, `https://logging.apache.org/log4j/log4j-2.1/manual/layouts.html`
+
+
 * `Spring Boot @ConfigurationProperties example` https://www.mkyong.com/spring-boot/spring-boot-configurationproperties-example
 
 Spring Boot with Camel ActiveMQ JMS Example - Java AutoConfiguration
