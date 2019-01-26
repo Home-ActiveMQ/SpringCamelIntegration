@@ -8,6 +8,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,6 +25,8 @@ public class SpringBootConsoleApplication implements CommandLineRunner {
 
     private AtomicInteger lostMessages;
 
+    private final String runCamelTest = "yes";
+
     static List<String> allLostMessages = new ArrayList<>();
 
     @Autowired
@@ -30,7 +36,6 @@ public class SpringBootConsoleApplication implements CommandLineRunner {
     private MessageService messageService;
 
     public static void main(String[] args) {
-
         //TODO:  disabled banner, don't want to see the spring logo
 //        SpringApplication app = new SpringApplication(SpringBootConsoleApplication.class);
 //        app.setBannerMode(Banner.Mode.OFF);
@@ -40,17 +45,25 @@ public class SpringBootConsoleApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws InterruptedException {
-        deliveredMessages = new AtomicInteger();
-        lostMessages = new AtomicInteger();
-        for (int message = 1; message <= clientMessageProperties.getSentMessages(); message++) {
-            new Thread(taskSendMessage(message)).start();
-            synchronized (allLostMessages) { allLostMessages.add("" + message); }
-        }
+    public void run(String... args) throws InterruptedException, IOException {
+        BufferedReader readConsoleComand = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("Do You want run a Camel-Test in the console (yes/NO): ");
+        boolean isRunCamelTest = runCamelTest.equals(readConsoleComand.readLine());
 
-        Thread.sleep(clientMessageProperties.getAllResponseDelay());
-        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {}       DELIVERED MESSAGES = {}       LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", clientMessageProperties.getSentMessages(), deliveredMessages, lostMessages);
-        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
+        if (isRunCamelTest) {
+            deliveredMessages = new AtomicInteger();
+            lostMessages = new AtomicInteger();
+            for (int message = 1; message <= clientMessageProperties.getSentMessages(); message++) {
+                new Thread(taskSendMessage(message)).start();
+                synchronized (allLostMessages) {
+                    allLostMessages.add("" + message);
+                }
+            }
+
+            Thread.sleep(clientMessageProperties.getAllResponseDelay());
+            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {}       DELIVERED MESSAGES = {}       LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", clientMessageProperties.getSentMessages(), deliveredMessages, lostMessages);
+            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
+        }
     }
 
     private Runnable taskSendMessage(Object message) {
