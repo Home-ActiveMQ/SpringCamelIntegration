@@ -50,7 +50,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
     @Override
     public void run(String... args) throws InterruptedException, IOException {
         BufferedReader readComand = new BufferedReader(new InputStreamReader(System.in));
-        System.err.print("Do you want run a Camel-Test in the console (yes/NO): ");
+        System.out.print("Do you want run a Camel-Test in the console (yes/NO): ");
         boolean isRunCamelTest = runCamelTest.equals(readComand.readLine());
         if (isRunCamelTest) {
             deliveredMessages = new AtomicInteger();
@@ -67,7 +67,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
         }
 
-        System.err.print("Do you want stop the Camel-Test (yes/NO): ");
+        System.out.print("Do you want stop the Camel-Test (yes/NO): ");
         isRunCamelTest = stopCamelTest.equals(readComand.readLine());
         if (isRunCamelTest) System.exit(0);
     }
