@@ -4,6 +4,9 @@
 * `changing-date-format-in-log4j` http://logging.apache.org/log4j/2.x/manual/layouts.html `https://stackoverflow.com/questions/21979606/changing-date-format-in-log4j-xml`, `https://logging.apache.org/log4j/log4j-2.1/manual/layouts.html`
 
 
+* [ENABLE MANAGEMENT WEB CONSOLE FOR JBOSS/WILDFLY](https://cinhtau.net/2015/08/05/enable-management-web-console-for-jbosswildfly)  **(** [>>](https://www.ibm.com/support/knowledgecenter/en/SSHLNR_8.1.4/com.ibm.pm.doc/install/jboss_config_agent_prereq_add_management_user.htm) **)**
+
+
 * `Spring Boot @ConfigurationProperties example` https://www.mkyong.com/spring-boot/spring-boot-configurationproperties-example
 
 Spring Boot with Camel ActiveMQ JMS Example - Java AutoConfiguration
