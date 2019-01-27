@@ -4,7 +4,7 @@ package com.mkyong.ws;
  * @see https://github.com/JobTest/FASTTACK/blob/dev-multithread/common-core/src/main/java/com/cts/fasttack/common/core/rest/client/RestClientImpl.java
  */
 
-public class CryptoClient {
+public abstract class CryptoClient {
 
     private RestCryptoClient restCryptoClient;
 
