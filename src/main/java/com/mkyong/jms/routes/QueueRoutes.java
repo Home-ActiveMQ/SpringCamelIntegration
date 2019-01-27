@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import static com.mkyong.util.JmsUtil.JMS;
 
 @Component
-public class MessageRoutes extends RouteBuilder {
+public class QueueRoutes extends RouteBuilder {
 
 	@Value("${jmsConfiguration.concurrentConsumers:1}")
 	private int concurrentConsumers;

@@ -1,7 +1,7 @@
 package com.mkyong;
 
 import com.mkyong.config.properties.ClientMessageProperties;
-import com.mkyong.service.MessageService;
+import com.mkyong.service.QueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -36,7 +36,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
     private ClientMessageProperties clientMessageProperties;
 
     @Autowired
-    private MessageService messageService;
+    private QueueService queueService;
 
     public static void main(String[] args) {
         //TODO:  disabled banner, don't want to see the spring logo
@@ -75,7 +75,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
     private Runnable taskSendMessage(Object message) {
         return () -> {
                 LOGGER.debug(" >>|  {}", message);
-            String response = messageService.sendMessage("" + message);
+            String response = queueService.sendMessage("" + message);
             if (response!=null) {
                 LOGGER.debug("|<<   {}", response);
                 deliveredMessages.incrementAndGet();

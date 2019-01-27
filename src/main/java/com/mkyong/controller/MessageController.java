@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.mkyong.config.properties.ClientMessageProperties;
-import com.mkyong.service.MessageService;
+import com.mkyong.service.QueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +28,7 @@ public class MessageController {
 	private ClientMessageProperties clientMessageProperties;
 
 	@Autowired
-	private MessageService messageService;
+	private QueueService queueService;
 
 	private final String runCamelTest = "yes";
 
@@ -58,7 +58,7 @@ public class MessageController {
 	private Runnable taskSendMessage(Object message) {
 		return () -> {
 			LOGGER.debug(" >>|  {}", message);
-			String response = messageService.sendMessage("" + message);
+			String response = queueService.sendMessage("" + message);
 			if (response!=null) {
 				LOGGER.debug("|<<   {}", response);
 				deliveredMessages.incrementAndGet();

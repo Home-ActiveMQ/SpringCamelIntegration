@@ -4,7 +4,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import javax.jms.JMSException;
@@ -14,16 +13,20 @@ import static com.mkyong.util.JmsUtil.JMS;
 
 @Service
 @ConfigurationProperties("messageService")
-public class MessageService {
+public class QueueService {
 
-    private static final Logger LOGGER = LogManager.getLogger(MessageService.class);
+    private static final Logger LOGGER = LogManager.getLogger(QueueService.class);
 
-	@Autowired
 	private CamelContext camelContext;
 
 	private String requestTimeout;
 
 	private String timeToLive;
+
+	@Autowired
+	public QueueService(CamelContext camelContext) {
+		this.camelContext = camelContext;
+	}
 
 //	@Autowired
 //	@Qualifier("producerTemplate")

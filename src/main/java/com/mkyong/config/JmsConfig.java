@@ -1,6 +1,6 @@
 package com.mkyong.config;
 
-import com.mkyong.jms.routes.MessageRoutes;
+import com.mkyong.jms.routes.QueueRoutes;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.pool.PooledConnectionFactory;
 import org.apache.camel.CamelContext;
@@ -17,7 +17,7 @@ import static com.mkyong.util.JmsUtil.JMS;
 public class JmsConfig {
 
     @Autowired
-    private MessageRoutes messageRoutes;
+    private QueueRoutes queueRoutes;
 
     @Value("${activeMQConnectionFactory.brokerURL:}")
     private String brokerURL;
@@ -62,7 +62,7 @@ public class JmsConfig {
     public CamelContext camelContext() throws Exception {
         CamelContext camelContext = new DefaultCamelContext();
         camelContext.addComponent(JMS, JmsComponent.jmsComponentAutoAcknowledge(pooledConnectionFactory()));
-        camelContext.addRoutes(messageRoutes);
+        camelContext.addRoutes(queueRoutes);
         camelContext.start();
         return camelContext;
     }
