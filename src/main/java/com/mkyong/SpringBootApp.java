@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @EnableConfigurationProperties
-@PropertySource(value = "classpath:camel-integration-application.properties", ignoreResourceNotFound = true)
-@PropertySource(value = "file:${jboss.home.dir}/standalone/configuration/camel-integration-application.properties", ignoreResourceNotFound = true)
+@PropertySource(value = "classpath:jms-queue-test-application.properties", ignoreResourceNotFound = true)
+@PropertySource(value = "file:${jboss.home.dir}/standalone/configuration/jms-queue-test-application.properties", ignoreResourceNotFound = true)
 @SpringBootApplication
 public class SpringBootApp extends SpringBootServletInitializer implements CommandLineRunner {
 
