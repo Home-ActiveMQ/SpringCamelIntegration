@@ -277,4 +277,21 @@ clientMessage.allResponseDelay = 25000
 	at com.mkyong.controller.MessageController.lambda$taskSendMessage$0(MessageController.java:62)
 	at java.lang.Thread.run(Thread.java:748)
 Caused by: javax.jms.JMSException: Could not connect to broker URL: tcp://localhost:61616. Reason: java.net.ConnectException: Connection refused: connect
+
+
+
+01:12:29,657 WARN  [org.apache.camel.component.jms.reply.TemporaryQueueReplyManager] (Camel (camel-1) thread #1336 - TemporaryQueueReplyManager[test1:queue]) Exception inside the DMLC for Temporary ReplyTo Queue for destination test1:queue, refreshing ReplyTo destination: javax.jms.InvalidDestinationException: Cannot use a Temporary destination from another Connection
+	at org.apache.activemq.ActiveMQMessageConsumer.<init>(ActiveMQMessageConsumer.java:197)
+	at org.apache.activemq.ActiveMQSession.createConsumer(ActiveMQSession.java:1304)
+	at org.apache.activemq.ActiveMQSession.createConsumer(ActiveMQSession.java:1247)
+	at org.apache.activemq.ActiveMQSession.createConsumer(ActiveMQSession.java:1159)
+	at org.apache.activemq.jms.pool.PooledSession.createConsumer(PooledSession.java:316)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.createConsumer(AbstractMessageListenerContainer.java:881)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.createListenerConsumer(AbstractPollingMessageListenerContainer.java:215)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.initResourcesIfNecessary(DefaultMessageListenerContainer.java:1189)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.invokeListener(DefaultMessageListenerContainer.java:1165)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.executeOngoingLoop(DefaultMessageListenerContainer.java:1158)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.run(DefaultMessageListenerContainer.java:1055)
+	at java.lang.Thread.run(Thread.java:748)
+
 ```

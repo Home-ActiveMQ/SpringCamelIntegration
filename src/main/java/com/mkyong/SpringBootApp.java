@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-
+import org.apache.commons.lang3.StringUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,10 +25,6 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
     private AtomicInteger deliveredMessages;
 
     private AtomicInteger lostMessages;
-
-    private final String runCamelTest = "yes";
-
-    private final String stopCamelTest = "yes";
 
     static List<String> allLostMessages = new ArrayList<>();
 
@@ -49,33 +45,31 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
     @Override
     public void run(String... args) throws InterruptedException, IOException {
-        BufferedReader readComand = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Do you want run a Camel-Test in the console (yes/NO): ");
-        boolean isRunCamelTest = runCamelTest.equals(readComand.readLine());
-        if (isRunCamelTest) {
-            deliveredMessages = new AtomicInteger();
-            lostMessages = new AtomicInteger();
-            for (int message = 1; message <= clientMessageProperties.getSentMessages(); message++) {
-                new Thread(taskSendMessage(message)).start();
+        deliveredMessages = new AtomicInteger();
+        lostMessages = new AtomicInteger();
+        int sentMessage = 0;
+        System.out.print("Enter queue name: ");
+        final String queue = new BufferedReader(new InputStreamReader(System.in)).readLine();
+
+        if (StringUtils.isNotBlank(queue)) {
+            while (sentMessage < clientMessageProperties.getSentMessages()) {
+                sentMessage++;
+                new Thread(taskSendMessage(queue, String.valueOf(sentMessage))).start();
                 synchronized (allLostMessages) {
-                    allLostMessages.add("" + message);
+                    allLostMessages.add(String.valueOf(sentMessage));
                 }
             }
-
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
-            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {}       DELIVERED MESSAGES = {}       LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", clientMessageProperties.getSentMessages(), deliveredMessages, lostMessages);
-            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
         }
 
-        System.out.print("Do you want stop the Camel-Test (yes/NO): ");
-        isRunCamelTest = stopCamelTest.equals(readComand.readLine());
-        if (isRunCamelTest) System.exit(0);
+        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {} ({}); <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, deliveredMessages, (sentMessage-deliveredMessages.get()), lostMessages);
+        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
     }
 
-    private Runnable taskSendMessage(Object message) {
+    private Runnable taskSendMessage(String queue, String message) {
         return () -> {
                 LOGGER.debug(" >>|  {}", message);
-            String response = queueService.sendMessage("" + message);
+            String response = queueService.sendMessage(queue, message);
             if (response!=null) {
                 LOGGER.debug("|<<   {}", response);
                 deliveredMessages.incrementAndGet();
