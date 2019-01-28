@@ -38,7 +38,7 @@ public class QueueController {
      */
     @RequestMapping("/")
     public ResponseEntity<String> index() {
-        return new ResponseEntity<>("<ul><li><a href=\"test1\">queue/test1</a><a href=\"test2\">queue/test2</a></li></ul>", HttpStatus.OK);
+        return new ResponseEntity<>("<ul><li><a href=\"test1\">queue/test1</a></li><li><a href=\"test2\">queue/test2</a></li><li><a href=\"test3\">queue/test3</a></li></ul>", HttpStatus.OK);
     }
 
 	/**

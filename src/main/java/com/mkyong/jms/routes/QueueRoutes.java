@@ -1,7 +1,6 @@
 package com.mkyong.jms.routes;
 
-import com.mkyong.jms.processor.Test1Processor;
-import com.mkyong.jms.processor.Test2Processor;
+import com.mkyong.jms.processor.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +19,9 @@ public class QueueRoutes extends RouteBuilder {
 	@Autowired
 	private Test2Processor test2Processor;
 
+	@Autowired
+	private Test3Processor test3Processor;
+
 	@Override
 	public void configure() throws Exception {
 		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers)
@@ -29,5 +31,9 @@ public class QueueRoutes extends RouteBuilder {
 		from(JMS + ":test2:queue?concurrentConsumers=" + concurrentConsumers)
 				.routeId("test2")
 				.process(test2Processor);
+
+		from(JMS + ":test3:queue?concurrentConsumers=" + concurrentConsumers)
+				.routeId("test3")
+				.process(test3Processor);
 	}
 }
