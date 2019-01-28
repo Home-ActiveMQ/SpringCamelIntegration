@@ -8,8 +8,10 @@ import org.springframework.boot.SpringApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.PropertySource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@EnableConfigurationProperties
+@PropertySource(value = "classpath:camel-integration-application.properties", ignoreResourceNotFound = true)
+@PropertySource(value = "file:${jboss.home.dir}/standalone/configuration/camel-integration-application.properties", ignoreResourceNotFound = true)
 @SpringBootApplication
 public class SpringBootApp extends SpringBootServletInitializer implements CommandLineRunner {
 
