@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import javax.annotation.PostConstruct;
 
 /**
  * @see https://stackoverflow.com/questions/41025627/how-can-i-name-a-service-with-multiple-names-in-spring
@@ -20,15 +21,17 @@ public class MultiBankConfig {
     @Autowired
     private BankService bankService;
 
-    @Bean(name = {"test1Processor", "test2Processor", "test3Processor"})
-    public TestProcessor createTestProcessor(@Autowired TestProcessor testProcessor) {
-
+    @PostConstruct
+    public void init() {
         LOGGER.debug(" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
         for (Bank bank: bankService.findAll()) {
             LOGGER.debug(bank);
         }
         LOGGER.debug(" <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ");
+    }
 
+    @Bean(name = {"test1Processor", "test2Processor", "test3Processor"})
+    public TestProcessor createTestProcessor(@Autowired TestProcessor testProcessor) {
         return testProcessor;
     }
 }
