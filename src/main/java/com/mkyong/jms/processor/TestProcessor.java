@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Test3Processor implements Processor {
+public class TestProcessor implements Processor {
 
-	private static final Logger LOGGER = LogManager.getLogger(Test3Processor.class);
+	private static final Logger LOGGER = LogManager.getLogger(TestProcessor.class);
 
 	@Autowired
 	private ClientMessageProperties clientMessageProperties;
