@@ -12,6 +12,8 @@ import javax.annotation.PostConstruct;
 
 /**
  * @see https://stackoverflow.com/questions/41025627/how-can-i-name-a-service-with-multiple-names-in-spring
+ *
+ * https://dbdiagram.io/d/5c6ef578f7c5bb70c72f15f6
  */
 @Configuration
 public class MultiBankConfig {

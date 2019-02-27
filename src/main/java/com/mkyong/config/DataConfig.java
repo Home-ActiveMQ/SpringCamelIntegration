@@ -11,6 +11,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
+/**
+ * @see https://devcolibri.com/spring-data-jpa-работа-с-бд-часть-1
+ *      http://qaru.site/questions/994811/springboot-no-qualifying-bean-of-type-javaxsqldatasource
+ */
+
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories("com.mkyong.repository")
