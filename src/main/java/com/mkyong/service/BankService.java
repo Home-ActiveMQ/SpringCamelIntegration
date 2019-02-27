@@ -7,6 +7,6 @@ public interface BankService {
 
     List<Bank> findAll();
 
-    Bank findAll(Long id);
+    Bank findOne(Long id);
 
 }

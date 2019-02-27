@@ -17,7 +17,7 @@ public class BankServiceImpl implements BankService {
         return bankRepository.findAll();
     }
 
-    public Bank findAll(Long id) {
+    public Bank findOne(Long id) {
         return bankRepository.findOne(id);
     }
 }
