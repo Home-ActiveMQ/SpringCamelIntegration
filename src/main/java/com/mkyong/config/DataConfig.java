@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
+ * https://dbdiagram.io/d/5c6ef578f7c5bb70c72f15f6
+ *
  * @see https://devcolibri.com/spring-data-jpa-работа-с-бд-часть-1
  *      http://qaru.site/questions/994811/springboot-no-qualifying-bean-of-type-javaxsqldatasource
  */

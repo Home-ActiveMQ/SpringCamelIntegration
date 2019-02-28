@@ -15,8 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
- * https://dbdiagram.io/d/5c6ef578f7c5bb70c72f15f6
- *
  * @see https://stackoverflow.com/questions/41025627/how-can-i-name-a-service-with-multiple-names-in-spring
  *      https://stackoverflow.com/questions/29743320/how-exactly-does-the-spring-beanpostprocessor-work
  * @see https://stackoverflow.com/questions/4540713/add-bean-programmatically-to-spring-web-app-context
