@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 /**
  * @see https://stackoverflow.com/questions/41025627/how-can-i-name-a-service-with-multiple-names-in-spring
  * @see https://stackoverflow.com/questions/4540713/add-bean-programmatically-to-spring-web-app-context
+ *      https://medium.com/@lofidewanto/creating-spring-bean-dynamically-in-the-runtime-d9e32c41d286
  *
  * https://dbdiagram.io/d/5c6ef578f7c5bb70c72f15f6
  */
@@ -42,9 +43,9 @@ public class MultiBankConfig {
         ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
 
         if (0<bankService.count()) {
-            for (Bank bank : bankService.findAll()) beanFactory.registerSingleton(bank.getUniqueUrl() + "Processor", new TestProcessor());
+            for (Bank bank : bankService.findAll()) beanFactory.registerSingleton(bank.getUniqueUrl() + "Processor", new TestProcessor(bank.getTitle()));
         } else {
-            beanFactory.registerSingleton("testProcessor", new TestProcessor());
+            beanFactory.registerSingleton("testProcessor", new TestProcessor("testProcessor"));
         }
     }
 }
