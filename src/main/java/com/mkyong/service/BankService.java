@@ -9,4 +9,5 @@ public interface BankService {
 
     Bank findOne(Long id);
 
+    long count();
 }

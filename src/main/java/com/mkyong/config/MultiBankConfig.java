@@ -30,18 +30,18 @@ public class MultiBankConfig {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @PostConstruct
-    public void init() {
-        ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
-
-//        beanFactory.registerSingleton("test1Processor", TestProcessor.class);
-//        beanFactory.registerSingleton("test2Processor", TestProcessor.class);
-//        beanFactory.registerSingleton("test3Processor", TestProcessor.class);
-        for (Bank bank: bankService.findAll()) beanFactory.registerSingleton(bank.getUniqueUrl(), TestProcessor.class);
-    }
-
-//    @Bean(name = { "test1Processor", "test2Processor", "test3Processor" })
-//    public TestProcessor createTestProcessor(@Autowired TestProcessor testProcessor) {
-//        return testProcessor;
+//    @PostConstruct
+//    public void init() {
+//        ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
+//
+////        beanFactory.registerSingleton("test1Processor", TestProcessor.class);
+////        beanFactory.registerSingleton("test2Processor", TestProcessor.class);
+////        beanFactory.registerSingleton("test3Processor", TestProcessor.class);
+//        for (Bank bank: bankService.findAll()) beanFactory.registerSingleton(bank.getUniqueUrl(), TestProcessor.class);
 //    }
+
+    @Bean(name = {"test1Processor", "test2Processor", "test3Processor"})
+    public TestProcessor createTestProcessor() {
+        return new TestProcessor();
+    }
 }

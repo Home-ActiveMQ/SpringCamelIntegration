@@ -20,4 +20,8 @@ public class BankServiceImpl implements BankService {
     public Bank findOne(Long id) {
         return bankRepository.findOne(id);
     }
+
+    public long count() {
+        return bankRepository.count();
+    }
 }
