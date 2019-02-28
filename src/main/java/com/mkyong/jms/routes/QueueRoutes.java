@@ -19,9 +19,9 @@ import static com.mkyong.util.JmsUtil.JMS;
  * @see https://www.concretepage.com/spring/example_annotationconfigapplicationcontext_spring
  *      https://www.ibm.com/developerworks/ru/library/ws-springjava/index.html
  */
-
 @Component
-@DependsOn({"test1Processor", "test2Processor", "test3Processor"})
+//@DependsOn({"test1Processor", "test2Processor", "test3Processor"})
+@DependsOn({"multiBankConfig"})
 public class QueueRoutes extends RouteBuilder {
 
 	@Value("${jmsConfiguration.concurrentConsumers:1}")
@@ -30,10 +30,10 @@ public class QueueRoutes extends RouteBuilder {
 	@Autowired
 	private ApplicationContext applicationContext;
 
+	private ConfigurableListableBeanFactory beanFactory;
+
 	@Autowired
 	private BankService bankService;
-
-	private ConfigurableListableBeanFactory beanFactory;
 
     @PostConstruct
     public void init() {
@@ -42,10 +42,15 @@ public class QueueRoutes extends RouteBuilder {
 
 	@Override
 	public void configure() throws Exception {
-		for (Bank bank : bankService.findAll())
-			from(JMS + ":" + bank.getUniqueUrl() + ":queue?concurrentConsumers=" + concurrentConsumers)
-					.routeId(bank.getUniqueUrl())
-//					.process(beanFactory.getBean(TestProcessor.class));
-					.process((TestProcessor) beanFactory.getBean(bank.getUniqueUrl() + "Processor"));
+		if (0<bankService.count()) {
+			for (Bank bank : bankService.findAll())
+				from(JMS + ":" + bank.getUniqueUrl() + ":queue?concurrentConsumers=" + concurrentConsumers)
+						.routeId(bank.getUniqueUrl())
+						.process((TestProcessor) beanFactory.getBean(bank.getUniqueUrl() + "Processor"));
+		} else {
+			from(JMS + ":test:queue?concurrentConsumers=" + concurrentConsumers)
+					.routeId("test")
+					.process((TestProcessor) beanFactory.getBean("testProcessor"));
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.mkyong.controller;
 
+import com.mkyong.service.BankService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,12 +34,20 @@ public class QueueController {
 	@Autowired
 	private QueueService queueService;
 
+
+    @Autowired
+    private BankService bankService;
+
     /**
      * http://localhost:8080/SpringCamelIntegration-0.0.1-SNAPSHOT/queue/
      */
     @RequestMapping("/")
     public ResponseEntity<String> index() {
-        return new ResponseEntity<>("<ul><li><a href=\"test1\">queue/test1</a></li><li><a href=\"test2\">queue/test2</a></li><li><a href=\"test3\">queue/test3</a></li></ul>", HttpStatus.OK);
+        if (0<bankService.count()) {
+            return new ResponseEntity<>("<ul><li><a href=\"test1\">queue/test1</a></li><li><a href=\"test2\">queue/test2</a></li><li><a href=\"test3\">queue/test3</a></li></ul>", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("<ul><li><a href=\"test\">queue/test</a></li></ul>", HttpStatus.OK);
+        }
     }
 
 	/**

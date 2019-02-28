@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
@@ -20,28 +21,30 @@ import javax.annotation.PostConstruct;
  * https://dbdiagram.io/d/5c6ef578f7c5bb70c72f15f6
  */
 @Configuration
+@Component("multiBankConfig")
 public class MultiBankConfig {
 
     private static final Logger LOGGER = LogManager.getLogger(MultiBankConfig.class);
 
     @Autowired
-    private BankService bankService;
-
-    @Autowired
     private ApplicationContext applicationContext;
 
-//    @PostConstruct
-//    public void init() {
-//        ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
-//
-////        beanFactory.registerSingleton("test1Processor", TestProcessor.class);
-////        beanFactory.registerSingleton("test2Processor", TestProcessor.class);
-////        beanFactory.registerSingleton("test3Processor", TestProcessor.class);
-//        for (Bank bank: bankService.findAll()) beanFactory.registerSingleton(bank.getUniqueUrl(), TestProcessor.class);
+    @Autowired
+    private BankService bankService;
+
+//    @Bean(name = {"test1Processor", "test2Processor", "test3Processor"})
+//    public TestProcessor createTestProcessor() {
+//        return new TestProcessor();
 //    }
 
-    @Bean(name = {"test1Processor", "test2Processor", "test3Processor"})
-    public TestProcessor createTestProcessor() {
-        return new TestProcessor();
+    @PostConstruct
+    public void init() {
+        ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
+
+        if (0<bankService.count()) {
+            for (Bank bank : bankService.findAll()) beanFactory.registerSingleton(bank.getUniqueUrl() + "Processor", new TestProcessor());
+        } else {
+            beanFactory.registerSingleton("testProcessor", new TestProcessor());
+        }
     }
 }
