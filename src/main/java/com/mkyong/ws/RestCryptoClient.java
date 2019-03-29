@@ -2,6 +2,8 @@ package com.mkyong.ws;
 
 public interface RestCryptoClient {
 
-    <T> T getForObject(String path, Class<T> responseType);
+    <RESPONSE> RESPONSE getForObject(String path, Class<RESPONSE> responseType);
+
+    <REQUEST, RESPONSE> RESPONSE postForObject(String path, REQUEST request, Class<RESPONSE> responseType);
 
 }

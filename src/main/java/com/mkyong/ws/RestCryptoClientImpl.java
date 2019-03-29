@@ -26,10 +26,16 @@ public class RestCryptoClientImpl implements RestCryptoClient {
     }
 
     @Override
-    public <T> T getForObject(String path, Class<T> responseType) {
+    public <RESPONSE> RESPONSE getForObject(final String path, final Class<RESPONSE> responseType) {
         String url = getUrl() + "/" + path;
 //        return super.getForObject(url, responseType);
         return restTemplate.getForObject(url, responseType);
+    }
+
+    @Override
+    public <REQUEST, RESPONSE> RESPONSE postForObject(final String path, final REQUEST request, final Class<RESPONSE> responseType) {
+        String url = getUrl() + "/" + path;
+        return restTemplate.postForObject(url, request, responseType);
     }
 
     @Override

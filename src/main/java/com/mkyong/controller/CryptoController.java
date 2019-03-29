@@ -1,7 +1,13 @@
 package com.mkyong.controller;
 
+import com.mkyong.dto.TokenLifecycleRequestDto;
+import com.mkyong.dto.TokenLifecycleResponseDto;
 import com.mkyong.service.CryptoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,5 +39,34 @@ public class CryptoController {
 	@RequestMapping("encrypt")
 	public String encrypt() {
 		return "{ \"threadId\" : \"" + Thread.currentThread().getId() + "\"} "; //TODO:  some data...
+	}
+
+	/**
+	 * http://localhost:8080/SpringCamelIntegration-0.0.1-SNAPSHOT/crypto/client/lifecycle
+	 */
+	@RequestMapping("client/lifecycle")
+	public ResponseEntity<?> clientLifecycle() {
+		TokenLifecycleRequestDto req = new TokenLifecycleRequestDto();
+//		req.setOperationReason("bla bla bla");
+		req.setOperationReasonCode("ACCOUNT_UPDATE");
+		req.setOperationType("UPDATE");
+		req.setOperatorID("operator");
+
+		TokenLifecycleResponseDto lifecycleResponseDto = cryptoService.lifecycle("crypto/lifecycle", req);
+		return lifecycleResponseDto.getErrorCode()!=null
+				? new ResponseEntity<>(lifecycleResponseDto, HttpStatus.OK)
+				: new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	/**
+	 * http://localhost:8080/SpringCamelIntegration-0.0.1-SNAPSHOT/crypto/lifecycle
+	 *
+	 * {"operationReasonCode":"ACCOUNT_UPDATE","operatorID":"operator","operationType":"UPDATE"}
+	 */
+	@PostMapping("lifecycle")
+	public TokenLifecycleResponseDto lifecycle(@RequestBody TokenLifecycleRequestDto request) {
+		TokenLifecycleResponseDto lifecycleResponseDto = new TokenLifecycleResponseDto();
+		lifecycleResponseDto.setErrorCode(request.getOperationReason()); //TODO:  'bla bla bla'
+		return lifecycleResponseDto;
 	}
 }

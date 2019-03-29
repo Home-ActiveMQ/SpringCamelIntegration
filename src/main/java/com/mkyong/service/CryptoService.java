@@ -1,5 +1,7 @@
 package com.mkyong.service;
 
+import com.mkyong.dto.TokenLifecycleRequestDto;
+import com.mkyong.dto.TokenLifecycleResponseDto;
 import com.mkyong.ws.CryptoClient;
 import com.mkyong.ws.RestCryptoClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +24,10 @@ public class CryptoService extends CryptoClient {
     @Override
     public String encrypt(String path) {
         return super.encrypt(path);
+    }
+
+    @Override
+    public TokenLifecycleResponseDto lifecycle(String path, TokenLifecycleRequestDto request) {
+        return super.lifecycle(path, request);
     }
 }
