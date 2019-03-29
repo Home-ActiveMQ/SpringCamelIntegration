@@ -5,10 +5,21 @@
             <!--<PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %c{1} - %msg%n" />-->
             <PatternLayout pattern="%highlight{[%-5level] %d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %c{1} - %msg%n}" />
         </Console>
+        <!--<RollingFile name="defaultLogger" fileName="${loggingRootDirectory}/jms-queue-test.log"-->
+                     <!--filePattern="${loggingRootDirectory}/jms-queue-test-%d{yyyy-MM-dd}-%i.log">-->
+            <!--<Layout type="PatternLayout" pattern="%d{dd.MM.yyyy HH:mm:ss.SSS} %xEx{filters(${excludedPackages})} %-5p %-5c{3}\:%L  %m%n"/>-->
+            <!--<Policies>-->
+                <!--<SizeBasedTriggeringPolicy size="100 MB" />-->
+            <!--</Policies>-->
+            <!--<DefaultRolloverStrategy max="20" compressionLevel="0"/>-->
+        <!--</RollingFile>-->
     </Appenders>
     <Loggers>
         <Root level="debug" additivity="false">
             <AppenderRef ref="console" />
         </Root>
+        <!--<Logger name="org.springframework" level="info" additivity="false">-->
+            <!--<AppenderRef ref="defaultLogger"/>-->
+        <!--</Logger>-->
     </Loggers>
 </Configuration>

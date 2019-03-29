@@ -16,6 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * default >> `queue/`
+ *
+ * from DB-Bank import(s):
+ * >> `queue/test1`
+ * >> `queue/test2`
+ * >> `queue/test3`
+ */
+
 @RestController
 @RequestMapping("queue")
 public class QueueController {
@@ -40,6 +49,8 @@ public class QueueController {
 
     /**
      * http://localhost:8080/SpringCamelIntegration-0.0.1-SNAPSHOT/queue/
+     *
+     * wildfly-10.1.0/standalone/log/server.log
      */
     @RequestMapping("/")
     public ResponseEntity<String> index() {

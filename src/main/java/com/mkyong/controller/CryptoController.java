@@ -5,6 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 1. >> `crypto/client/encrypt` >>
+ * 2. << `crypto/encrypt`
+ *
+ *    { "restTemplate" : "221907021951" } { "threadId" : "582"} << { "threadId" : "586"}
+ */
+
 @RestController
 @RequestMapping("crypto")
 public class CryptoController {
