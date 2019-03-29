@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 1. >> `crypto/client/encrypt` >>
+ * 1. >> `crypto/client/encrypt` >> used LoggingClientHttpRequestInterceptor >> wildfly-10.1.0/standalone/log/server.log
  * 2. << `crypto/encrypt`
  *
  *    { "restTemplate" : "221907021951" } { "threadId" : "582"} << { "threadId" : "586"}
