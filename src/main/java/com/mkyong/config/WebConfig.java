@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import com.mkyong.controller.interceptor.LoggingClientHttpRequestInterceptor;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -26,10 +27,16 @@ public class WebConfig {
     public RestCryptoClient restCryptoClient() {
 //        return new RestCryptoClientImpl("localhost", 8080, "SpringCamelIntegration-0.0.1-SNAPSHOT");
 
-        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        RestTemplate restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(factory));
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setRequestFactory(cryptoSimpleHttpsClientRequestFactory());
         restTemplate.setInterceptors(Collections.singletonList(loggingClientHttpRequestInterceptor()));
         return new RestCryptoClientImpl("localhost", 8080, "SpringCamelIntegration-0.0.1-SNAPSHOT", restTemplate);
+    }
+
+    @Bean
+    public ClientHttpRequestFactory cryptoSimpleHttpsClientRequestFactory() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        return new BufferingClientHttpRequestFactory(factory);
     }
 
     @Bean
