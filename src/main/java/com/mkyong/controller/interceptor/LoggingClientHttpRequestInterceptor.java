@@ -36,8 +36,8 @@ public class LoggingClientHttpRequestInterceptor implements ClientHttpRequestInt
             LOGGER.debug("Address     : {}", request.getURI());
             LOGGER.debug("Http-Method : {}", request.getMethod());
             LOGGER.debug("Headers     : {}", request.getHeaders());
-//            LOGGER.debug("Payload     : {}", new String(body, "UTF-8"));
-            LOGGER.debug("Payload     : {}", new String(body)); //TODO:  originalPayload
+            LOGGER.debug("Payload     : {}", new String(body, "UTF-8"));
+//            LOGGER.debug("Payload     : {}", new String(body)); //TODO:  originalPayload
             LOGGER.debug("========================================================================================");
         }
     }
