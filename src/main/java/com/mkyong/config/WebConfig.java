@@ -13,7 +13,10 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * @see https://github.com/JobTest/FASTTACK/blob/dev-multithread/crypto/crypto-client/src/main/java/com/cts/fasttack/crypto/client/conf/CryptoClientConfiguration.java
@@ -29,7 +32,8 @@ public class WebConfig {
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(cryptoSimpleHttpsClientRequestFactory());
-        restTemplate.setInterceptors(Collections.singletonList(loggingClientHttpRequestInterceptor()));
+//        restTemplate.setInterceptors(Collections.singletonList(loggingClientHttpRequestInterceptor()));
+        restTemplate.setInterceptors(loggingClientHttpRequestInterceptors());
         return new RestCryptoClientImpl("localhost", 8080, "SpringCamelIntegration-0.0.1-SNAPSHOT", restTemplate);
     }
 
@@ -40,7 +44,9 @@ public class WebConfig {
     }
 
     @Bean
-    public ClientHttpRequestInterceptor loggingClientHttpRequestInterceptor() {
-        return new LoggingClientHttpRequestInterceptor();
+    public List<ClientHttpRequestInterceptor> loggingClientHttpRequestInterceptors() {
+        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
+        interceptors.add(new LoggingClientHttpRequestInterceptor());
+        return interceptors;
     }
 }
