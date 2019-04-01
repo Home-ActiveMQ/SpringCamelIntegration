@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RestCryptoClientImpl implements RestCryptoClient {
 
     private long serialVersionUID = ThreadLocalRandom.current().nextLong(100000000000L, 999999999999L);
+    private String tls;
     private String host;
     private String contextRoot;
     private int port;
@@ -18,7 +19,8 @@ public class RestCryptoClientImpl implements RestCryptoClient {
         this.contextRoot = contextRoot;
     }
 
-    public RestCryptoClientImpl(String host, int port, String contextRoot, RestTemplate restTemplate) {
+    public RestCryptoClientImpl(String tls, String host, int port, String contextRoot, RestTemplate restTemplate) {
+        this.tls = tls;
         this.host = host;
         this.port = port;
         this.contextRoot = contextRoot;
@@ -44,6 +46,6 @@ public class RestCryptoClientImpl implements RestCryptoClient {
     }
 
     private String getUrl() {
-        return "http://" + host + ":" + port + "/" + contextRoot;
+        return tls +  "://" + host + ":" + port + "/" + contextRoot;
     }
 }
