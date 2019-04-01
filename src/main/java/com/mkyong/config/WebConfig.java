@@ -33,7 +33,7 @@ public class WebConfig {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(cryptoSimpleHttpsClientRequestFactory());
 //        restTemplate.setInterceptors(Collections.singletonList(loggingClientHttpRequestInterceptor()));
-        restTemplate.setInterceptors(loggingClientHttpRequestInterceptors());
+        restTemplate.setInterceptors(interceptors());
         return new RestCryptoClientImpl("localhost", 8080, "SpringCamelIntegration-0.0.1-SNAPSHOT", restTemplate);
     }
 
@@ -44,9 +44,14 @@ public class WebConfig {
     }
 
     @Bean
-    public List<ClientHttpRequestInterceptor> loggingClientHttpRequestInterceptors() {
+    public List<ClientHttpRequestInterceptor> interceptors() {
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
-        interceptors.add(new LoggingClientHttpRequestInterceptor());
+        interceptors.add(loggingClientHttpRequestInterceptors());
         return interceptors;
+    }
+
+    @Bean
+    public ClientHttpRequestInterceptor loggingClientHttpRequestInterceptors() {
+        return new LoggingClientHttpRequestInterceptor();
     }
 }
