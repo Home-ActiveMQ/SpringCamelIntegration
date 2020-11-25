@@ -90,14 +90,15 @@ Setting header JMSExpiration, didn't cause removing message from a queue automat
 Установка заголовка JMSExpiration не приводила к автоматическому удалению сообщения из очереди в моем случае. Но этот документ подсказал мне.
 ```
 
-* [http://localhost:8161](http://localhost:8161) **(** [http://localhost:8161/admin/queues.jsp](http://localhost:8161/admin/queues.jsp) **)**   admin | admin
-![screenshot-1](screenshot-2_1.png)
-
-![screenshot-2](screenshot-2_2.png)
-
-
 
 ## jms time to live example
 
 * [Java Message Service by](https://www.oreilly.com/library/view/java-message-service/0596000685/re05.html)
 * [JMS topic time to live](https://stackoverflow.com/questions/18507595/jms-topic-time-to-live)
+
+
+
+* [http://localhost:8161](http://localhost:8161) **(** [http://localhost:8161/admin/queues.jsp](http://localhost:8161/admin/queues.jsp) **)**   admin | admin
+![screenshot-1](screenshot-2_1.png)
+
+![screenshot-2](screenshot-2_2.png)
