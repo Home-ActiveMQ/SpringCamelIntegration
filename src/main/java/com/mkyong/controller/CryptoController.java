@@ -1,5 +1,6 @@
 package com.mkyong.controller;
 
+import com.mkyong.controller.interceptor.MessageHistoryOperation;
 import com.mkyong.dto.TokenLifecycleRequestDto;
 import com.mkyong.dto.TokenLifecycleResponseDto;
 import com.mkyong.service.CryptoService;
@@ -63,6 +64,7 @@ public class CryptoController {
 	 *
 	 * {"operationReasonCode":"ACCOUNT_UPDATE","operatorID":"operator","operationType":"UPDATE"}
 	 */
+//	@MessageHistoryOperation(connectorClient = "CRYPTO", operatorID = "#request != null ? #request.operatorID : null", operationType = "#request != null ? #request.operationType : null")
 	@PostMapping("lifecycle")
 	public TokenLifecycleResponseDto lifecycle(@RequestBody TokenLifecycleRequestDto request) {
 		TokenLifecycleResponseDto lifecycleResponseDto = new TokenLifecycleResponseDto();

@@ -8,10 +8,13 @@ import org.springframework.boot.SpringApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.event.EventListener;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -50,6 +53,17 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
     @Override
     public void run(String... args) throws InterruptedException, IOException {
+
+        /**
+         * @see https://otus.ru/nest/post/666
+         *
+         * операторы break и continue используются в цыклах
+         * continue - прерывает в этой точке выполнения кода в теле цыкла и переходит к следующей итерации цыкла
+         * break - прерывает в этой точке выполнения кода в теле цыкла и полностью выходит из цыкла
+         */
+        for (String userBaseCn: clientMessageProperties.getUserBaseCn(";")) System.out.println("userBaseCn = " + userBaseCn);
+        for (String roleDn: clientMessageProperties.getRoleDn(";")) System.out.println("roleDn = " + roleDn);
+
         deliveredMessages = new AtomicInteger();
         lostMessages = new AtomicInteger();
         int sentMessage = 0;
@@ -84,5 +98,10 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
                 lostMessages.incrementAndGet();
             }
         };
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void doSomethingAfterStartup() {
+        LOGGER.info("*** APPLICATION STARTED SUCCESSFULLY ***");
     }
 }
