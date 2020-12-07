@@ -1,16 +1,16 @@
 package com.mkyong.data;
 
-public class MessageTest {
+public class Message {
     private int id;
 
     private long requestTimeMillis;
 
     private long responseTimeMillis;
 
-    public MessageTest() {
+    public Message() {
     }
 
-    public MessageTest(int id, long requestTimeMillis, long responseTimeMillis) {
+    public Message(int id, long requestTimeMillis, long responseTimeMillis) {
         this.id = id;
         this.requestTimeMillis = requestTimeMillis;
         this.responseTimeMillis = responseTimeMillis;
