@@ -83,9 +83,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
             if (response!=null) {
                 Message messageResponse = new Gson().fromJson(response, Message.class);
                 messageResponse.setResponseTimeMillis(System.currentTimeMillis());
-
-                float timeSec = (float) (messageResponse.getResponseTimeMillis()-messageResponse.getRequestTimeMillis()) / 1000;
-                LOGGER.debug("|<<   {} ... {}", messageResponse, timeSec);
+                LOGGER.debug("|<<   {}", messageResponse);
                 deliveredMessages.incrementAndGet();
                 synchronized (allLostMessages) { allLostMessages.remove(String.valueOf(messageResponse.getId())); }
             } else {
