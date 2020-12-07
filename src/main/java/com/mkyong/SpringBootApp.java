@@ -17,7 +17,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import com.google.gson.Gson;
 
@@ -33,7 +35,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
     private AtomicInteger lostMessages;
 
-    static List<String> allLostMessages = new ArrayList<>();
+    static Map<String, String> allLostMessages = new HashMap();
 
     @Autowired
     private ClientMessageProperties clientMessageProperties;
@@ -66,8 +68,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
                         taskSendMessage(queue, message))
                         .start();
                 synchronized (allLostMessages) {
-                    allLostMessages.add(String.valueOf(message.getId()));
-//                    allLostMessages.add(message.getId() + ":" + message.getTimeToLive());
+                    allLostMessages.put(String.valueOf(message.getId()), String.valueOf(message.getTimeToLive()));
                 }
             }
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
