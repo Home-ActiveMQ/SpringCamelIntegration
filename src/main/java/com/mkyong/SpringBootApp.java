@@ -61,12 +61,13 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         if (StringUtils.isNotBlank(queue)) {
             while (sentMessage < clientMessageProperties.getSentMessages()) {
                 sentMessage++;
+                Message message = new Message(sentMessage, System.currentTimeMillis(), 0L);
                 new Thread(
-                        taskSendMessage(
-                                queue,
-                                new Message(sentMessage, System.currentTimeMillis(), 0L))).start();
+                        taskSendMessage(queue, message))
+                        .start();
                 synchronized (allLostMessages) {
-                    allLostMessages.add(String.valueOf(sentMessage));
+                    allLostMessages.add(String.valueOf(message.getId()));
+//                    allLostMessages.add(message.getId() + ":" + message.getTimeToLive());
                 }
             }
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
