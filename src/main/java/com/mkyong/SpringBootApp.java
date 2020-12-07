@@ -1,6 +1,7 @@
 package com.mkyong;
 
 import com.mkyong.config.properties.ClientMessageProperties;
+import com.mkyong.data.MessageTest;
 import com.mkyong.service.QueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -18,6 +19,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import com.google.gson.Gson;
 
 @EnableConfigurationProperties
 @PropertySource(value = "classpath:jms-queue-test-application.properties", ignoreResourceNotFound = true)
@@ -59,7 +61,10 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         if (StringUtils.isNotBlank(queue)) {
             while (sentMessage < clientMessageProperties.getSentMessages()) {
                 sentMessage++;
-                new Thread(taskSendMessage(queue, String.valueOf(sentMessage))).start();
+                new Thread(
+                        taskSendMessage(
+                                queue,
+                                new MessageTest(sentMessage, System.currentTimeMillis(), 0L))).start();
                 synchronized (allLostMessages) {
                     allLostMessages.add(String.valueOf(sentMessage));
                 }
@@ -71,14 +76,18 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
     }
 
-    private Runnable taskSendMessage(String queue, String message) {
+    private Runnable taskSendMessage(String queue, MessageTest message) {
         return () -> {
-                LOGGER.debug(" >>|  {}", message);
-            String response = queueService.sendMessage(queue, message);
+            LOGGER.debug(" >>|  {}", message);
+            String response = queueService.sendMessage(queue, new Gson().toJson(message));
             if (response!=null) {
-                LOGGER.debug("|<<   {}", response);
+                MessageTest responseMessage = new Gson().fromJson(response, MessageTest.class);
+                responseMessage.setResponseTimeMillis(System.currentTimeMillis());
+
+                float timeSec = (float) (responseMessage.getResponseTimeMillis()-responseMessage.getRequestTimeMillis()) / 1000;
+                LOGGER.debug("|<<   {} ... {}", responseMessage, timeSec);
                 deliveredMessages.incrementAndGet();
-                synchronized (allLostMessages) { allLostMessages.remove(response); }
+                synchronized (allLostMessages) { allLostMessages.remove(String.valueOf(responseMessage.getId())); }
             } else {
                 LOGGER.error("|<<   {}", response);
                 lostMessages.incrementAndGet();

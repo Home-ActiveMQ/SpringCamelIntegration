@@ -1,6 +1,8 @@
 package com.mkyong.jms.processor;
 
+import com.google.gson.Gson;
 import com.mkyong.config.properties.ClientMessageProperties;
+import com.mkyong.data.MessageTest;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,15 @@ public class Test1Processor implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-//		LOGGER.debug(">>|  {}", "'" + exchange.getPattern().toString() + "' " + message);
-		Object message = exchange.getIn().getBody();
+//		LOGGER.debug(">>|  {}", "'" + exchange.getPattern().toString() + "' " + obj);
+		Object obj = exchange.getIn().getBody();
+		MessageTest message = new Gson().fromJson(String.valueOf(obj), MessageTest.class);
 		LOGGER.debug( " >>|  {}", message);
+
 		Thread.sleep(clientMessageProperties.getResponseDelay());
+
+		message = new Gson().fromJson(String.valueOf(obj), MessageTest.class);
 		LOGGER.debug("|<<   {}", message);
-		exchange.getIn().setBody(message);
+		exchange.getIn().setBody(obj);
 	}
 }
