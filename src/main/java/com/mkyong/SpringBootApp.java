@@ -66,12 +66,12 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
             while (sentMessage < clientMessageProperties.getSentMessages()) {
                 long requestTimeMillis = System.currentTimeMillis();
                 Thread.sleep(speedSending);
+
                 int waitingMessages = sentMessage-deliveredMessages.get();
                 final int concurrentConsumers = 20;
-
                 if (concurrentConsumers <= waitingMessages) {
                     Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
-                    LOGGER.warn("SENT MESSAGES = {};       WAITING MESSAGES = {};       DELIVERED MESSAGES = {};", message, waitingMessages, deliveredMessages);
+                    LOGGER.warn("      >>|  {};       WAITING MESSAGES = {};       DELIVERED MESSAGES = {};", message, waitingMessages, deliveredMessages);
                     discardedMessage++;
                     continue;
                 } else {
