@@ -102,3 +102,10 @@ Setting header JMSExpiration, didn't cause removing message from a queue automat
 ![screenshot-1](screenshot-2_1.png)
 
 ![screenshot-2](screenshot-2_2.png)
+
+
+* Результат №1 утери сообщений внутри системы без счетчика:
+  ![screenshot-3](screenshot-3.png)
+* Результат №2 контроля сообщений внутри системы со счетчиком:
+  ![screenshot-4_1](screenshot-4_1.png)
+  ![screenshot-4_2](screenshot-4_2.png)

@@ -57,34 +57,38 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         deliveredMessages = new AtomicInteger();
         lostMessages = new AtomicInteger();
         int sentMessage = 0;
+        int discardedMessage = 0;
+        final long speedSending = 20L;
         System.out.print("Enter queue name: ");
         final String queue = new BufferedReader(new InputStreamReader(System.in)).readLine();
 
         if (StringUtils.isNotBlank(queue)) {
             while (sentMessage < clientMessageProperties.getSentMessages()) {
-                sentMessage++;
                 long requestTimeMillis = System.currentTimeMillis();
-                Message message = new Message(sentMessage, requestTimeMillis, 0L);
-                new Thread(
-                        taskSendMessage(queue, message))
-                        .start();
-                synchronized (allLostMessages) {
-                    allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
-                }
+                Message message = new Message(sentMessage+1, requestTimeMillis, 0L);
+
+                Thread.sleep(speedSending);
                 int waitingMessages = sentMessage-deliveredMessages.get();
                 final int concurrentConsumers = 20;
-                final long timeToLive = 1500L;
+
                 if (concurrentConsumers <= waitingMessages) {
-                    LOGGER.warn("SENT MESSAGES = {};       WAITING MESSAGES = {};       DELIVERED MESSAGES = {};", sentMessage, waitingMessages, deliveredMessages);
-                    Thread.sleep(timeToLive);
+                    LOGGER.warn("SENT MESSAGES = {\"id\":{}};       WAITING MESSAGES = {};       DELIVERED MESSAGES = {};", message.getId()+discardedMessage, waitingMessages, deliveredMessages);
+                    discardedMessage++;
+                    continue;
+                } else {
+                    sentMessage++;
+                    new Thread(
+                            taskSendMessage(queue, message))
+                            .start();
+                    synchronized (allLostMessages) {
+                        allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
+                    }
                 }
             }
-//            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>  <<<<<<<<<<<<<<<<<<<<<<<<"); // TODO
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
         }
 
-        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {} ({}); <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, deliveredMessages, (sentMessage-deliveredMessages.get()), lostMessages);
-//        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
+        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {} ({});       DISCARDED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
         LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<<<<<<<<<<<<<<<");
         for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
             String strRequestTimeMilliss = allLostMessage.getValue();
