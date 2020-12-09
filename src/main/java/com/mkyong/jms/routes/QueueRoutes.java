@@ -29,11 +29,8 @@ public class QueueRoutes extends RouteBuilder {
 	public void configure() throws Exception {
 		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers)
 
-//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&disableReplyTo=false&timeToLive=1") // FIXME:
-//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&timeToLive=100")
+//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&disableReplyTo=false&timeToLive=20") // FIXME:
 //		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&timeToLive=20")
-//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&timeToLive=5")
-//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&timeToLive=10000") // TODO: (10000-миллисекунд = 10-секунд)
 				.routeId("test1")
 				.process(test1Processor);
 
