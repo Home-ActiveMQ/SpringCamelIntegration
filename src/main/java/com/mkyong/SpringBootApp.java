@@ -71,7 +71,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
                 final int concurrentConsumers = 20;
                 if (concurrentConsumers <= waitingMessages) {
                     Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
-                    LOGGER.warn("      >>|  {};       WAITING MESSAGES = {};       DELIVERED MESSAGES = {};", message, waitingMessages, deliveredMessages);
+                    LOGGER.warn(">>|  REFUSED MESSAGE = {}       WAITING MESSAGES = {}       DELIVERED MESSAGES = {}", message, waitingMessages, deliveredMessages);
                     discardedMessage++;
                     continue;
                 } else {
@@ -88,7 +88,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
         }
 
-        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {} ({});       DISCARDED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
+        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {} ({});       REFUSED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
         LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<<<<<<<<<<<<<<<");
         for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
             String strRequestTimeMilliss = allLostMessage.getValue();
@@ -102,7 +102,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
     private Runnable taskSendMessage(String queue, Message message) {
         return () -> {
-            LOGGER.debug(" >>|  {}", message);
+            LOGGER.debug(">>|  SENT MESSAGE = {}", message);
             String response = queueService.sendMessage(queue, new Gson().toJson(message));
             if (response!=null) {
                 synchronized (allLostMessages) {
