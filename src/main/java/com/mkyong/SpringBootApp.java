@@ -70,7 +70,13 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
                         .start();
                 synchronized (allLostMessages) {
                     allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
-//                    LOGGER.info(message.getId()); // TODO
+                }
+                int waitingMessages = sentMessage-deliveredMessages.get();
+                final int concurrentConsumers = 20;
+                final long timeToLive = 1500L;
+                if (concurrentConsumers <= waitingMessages) {
+                    LOGGER.warn("SENT MESSAGES = {};       WAITING MESSAGES = {};       DELIVERED MESSAGES = {};", sentMessage, waitingMessages, deliveredMessages);
+                    Thread.sleep(timeToLive);
                 }
             }
 //            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>  <<<<<<<<<<<<<<<<<<<<<<<<"); // TODO
