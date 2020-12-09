@@ -20,15 +20,22 @@ public class Test1Processor implements Processor {
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
-//		LOGGER.debug(">>|  {}", "'" + exchange.getPattern().toString() + "' " + obj);
+//		LOGGER.error("getPattern =  {}", "'" + exchange.getPattern().toString() + "'");
+//		LOGGER.error("getIn =  {}", "'" + exchange.getIn().toString() + "'");
+//		LOGGER.error("getOut =  {}", "'" + exchange.getOut().toString() + "'");
+//		LOGGER.error("getExchangeId =  {}", "'" + exchange.getExchangeId() + "'");
+//		LOGGER.error("getFromRouteId =  {}", "'" + exchange.getFromRouteId() + "'");
+
 		Object obj = exchange.getIn().getBody();
-		Message message = new Gson().fromJson(String.valueOf(obj), Message.class);
-		LOGGER.debug( " >>|  {}", message);
+		if (obj != null) {
+			Message message = new Gson().fromJson(String.valueOf(obj), Message.class);
+			LOGGER.debug(" >>|  {}", message);
 
-		Thread.sleep(clientMessageProperties.getResponseDelay());
+			Thread.sleep(clientMessageProperties.getResponseDelay());
 
-		message = new Gson().fromJson(String.valueOf(obj), Message.class);
-		LOGGER.debug("|<<   {}", message);
-		exchange.getIn().setBody(obj);
+			message = new Gson().fromJson(String.valueOf(obj), Message.class);
+			LOGGER.debug("|<<   {}", message);
+			exchange.getIn().setBody(obj);
+		}
 	}
 }

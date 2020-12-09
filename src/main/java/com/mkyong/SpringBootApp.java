@@ -63,19 +63,31 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         if (StringUtils.isNotBlank(queue)) {
             while (sentMessage < clientMessageProperties.getSentMessages()) {
                 sentMessage++;
-                Message message = new Message(sentMessage, System.currentTimeMillis(), 0L);
+                long requestTimeMillis = System.currentTimeMillis();
+                Message message = new Message(sentMessage, requestTimeMillis, 0L);
                 new Thread(
                         taskSendMessage(queue, message))
                         .start();
                 synchronized (allLostMessages) {
-                    allLostMessages.put(String.valueOf(message.getId()), String.valueOf(message.getTimeToLive()));
+                    allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
+//                    LOGGER.info(message.getId()); // TODO
                 }
             }
+//            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>  <<<<<<<<<<<<<<<<<<<<<<<<"); // TODO
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
         }
 
         LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {} ({}); <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, deliveredMessages, (sentMessage-deliveredMessages.get()), lostMessages);
-        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
+//        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES = {} <<<<<<<<<<<<<<<<<<<<<<<<", allLostMessages);
+        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<<<<<<<<<<<<<<<");
+        for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
+            String strRequestTimeMilliss = allLostMessage.getValue();
+            long requestTimeMillis = Long.valueOf(strRequestTimeMilliss);
+            float timeToLive = (float) (System.currentTimeMillis() - requestTimeMillis) / 1000;
+            allLostMessage.setValue(String.valueOf(timeToLive));
+            LOGGER.error("{\"id\":{},\"time\":{}}", allLostMessage.getKey(), allLostMessage.getValue());
+
+        }
     }
 
     private Runnable taskSendMessage(String queue, Message message) {
@@ -83,11 +95,13 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
             LOGGER.debug(" >>|  {}", message);
             String response = queueService.sendMessage(queue, new Gson().toJson(message));
             if (response!=null) {
-                Message messageResponse = new Gson().fromJson(response, Message.class);
-                messageResponse.setResponseTimeMillis(System.currentTimeMillis());
-                LOGGER.debug("|<<   {}", messageResponse);
-                deliveredMessages.incrementAndGet();
-                synchronized (allLostMessages) { allLostMessages.remove(String.valueOf(messageResponse.getId())); }
+                synchronized (allLostMessages) {
+                    Message messageResponse = new Gson().fromJson(response, Message.class);
+                    messageResponse.setResponseTimeMillis(System.currentTimeMillis());
+                    LOGGER.debug("|<<   {}", messageResponse);
+                    deliveredMessages.incrementAndGet();
+                    allLostMessages.remove(String.valueOf(messageResponse.getId()));
+                }
             } else {
                 LOGGER.error("|<<   {}", response);
                 lostMessages.incrementAndGet();

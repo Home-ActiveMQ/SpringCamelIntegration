@@ -9,6 +9,8 @@ public class Message {
 
     private float timeToLive;
 
+    private String time;
+
     public Message() {
     }
 
@@ -50,11 +52,24 @@ public class Message {
         this.timeToLive = timeToLive;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("{");
         if (0 < id) sb.append("\"id\":" + id);
+//        if (0 < requestTimeMillis && 0 == responseTimeMillis) {
+            float time = (float) (System.currentTimeMillis() - requestTimeMillis) / 1000;
+            this.time = String.valueOf(time);
+//        }
+        sb.append(",\"time\":" + time);
 //        if (0 < requestTimeMillis) sb.append(",\"requestTimeMillis\":" + requestTimeMillis);
 //        if (0 < responseTimeMillis) sb.append(",\"responseTimeMillis\":" + responseTimeMillis);
         if (0 < requestTimeMillis && 0 < responseTimeMillis) {

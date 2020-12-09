@@ -27,10 +27,13 @@ public class QueueRoutes extends RouteBuilder {
 	// TODO: (1000-миллисекунд = 1-секунда) (300000-миллисекунд = 300-секунда = 5-минут)
 	@Override
 	public void configure() throws Exception {
-//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "")
-//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&disableReplyTo=true&timeToLive=1") // FIXME:
-//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&timeToLive=1")
-		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&timeToLive=10000") // TODO: (10000-миллисекунд = 10-секунд)
+		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers)
+
+//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&disableReplyTo=false&timeToLive=1") // FIXME:
+//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&timeToLive=100")
+//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&timeToLive=20")
+//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&timeToLive=5")
+//		from(JMS + ":test1:queue?concurrentConsumers=" + concurrentConsumers + "&timeToLive=10000") // TODO: (10000-миллисекунд = 10-секунд)
 				.routeId("test1")
 				.process(test1Processor);
 

@@ -49,8 +49,25 @@ public class IntegrationBus {
 		this.timeToLive = timeToLive;
 	}
 
+	/**
+	 * @see https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.2.1/html/apache_camel_component_reference/idu-jms
+	 *
+	 * Producer only: The timeout for waiting for a reply when using the InOut Exchange Pattern (in milliseconds).
+	 * The default is 20 seconds.
+	 * From Camel 2.13/2.12.3 onwards you can include the header CamelJmsRequestTimeout to override this endpoint configured timeout value, and thus have per message individual timeout values.
+	 */
 	public <T> T inOut(String queue, T message) throws JMSException {
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-		return (T) producerTemplate.requestBody(JMS + ":" + queue + ":queue?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&timeToLive=" + timeToLive, message);
+//		return (T) producerTemplate.requestBody(JMS + ":" + queue + ":queue?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&timeToLive=" + timeToLive, message);
+
+		return (T) producerTemplate.requestBody(JMS + ":" + queue + ":queue?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&timeToLive=" + timeToLive + "&disableReplyTo=false", message);
+
+//		return (T) producerTemplate.requestBody(JMS + ":" + queue + ":queue?exchangePattern=InOut&requestTimeout=" + requestTimeout, message);
+//		return (T) producerTemplate.requestBody(JMS + ":" + queue + ":queue?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&disableReplyTo=false&timeToLive=20", message);
+//		return (T) producerTemplate.requestBody(JMS + ":" + queue + ":queue?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&disableReplyTo=false&timeToLive=200", message);
+//				return (T) producerTemplate.requestBody(JMS + ":" + queue + ":queue?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&disableReplyTo=false&timeToLive=1", message); // TODO 10
+//		return (T) producerTemplate.requestBody(JMS + ":" + queue + ":queue?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&disableReplyTo=false&timeToLive=5", message); // TODO 10
+//		return (T) producerTemplate.requestBody(JMS + ":" + queue + ":queue?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&disableReplyTo=false&timeToLive=8", message); // TODO 10000
+//		return (T) producerTemplate.requestBody(JMS + ":" + queue + ":queue?exchangePattern=InOut&requestTimeout=" + requestTimeout + "&disableReplyTo=false&timeToLive=10000", message);
 	}
 }
