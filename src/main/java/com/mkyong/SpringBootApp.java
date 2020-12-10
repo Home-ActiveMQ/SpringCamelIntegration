@@ -67,9 +67,9 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
 
             while (sentMessage < clientMessageProperties.getSentMessages()) {
-                boolean isQueue = doQueue(queue);
+                boolean isTaskSendMessage = taskSendMessage(queue);
 
-//                if (isQueue) {
+//                if (isTaskSendMessage) {
 //                    LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {} ({});       REFUSED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
 //                    LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<<<<<<<<<<<<<<<");
 //                    for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
@@ -104,13 +104,13 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         }
     }
 
-    boolean doQueue(String queue) throws InterruptedException {
-        long requestTimeMillis = System.currentTimeMillis();
-//        Thread.sleep(speedSending);
+    boolean taskSendMessage(String queue) {
         final int concurrentConsumers = 20;
         int waitingMessages = sentMessage-deliveredMessages.get();
         int _availableQueues = concurrentConsumers-(sentMessage-deliveredMessages.get());
         int availableQueues = (0 < _availableQueues) ? _availableQueues : 0;
+
+        long requestTimeMillis = System.currentTimeMillis();
         if (concurrentConsumers <= waitingMessages) {
             Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
             LOGGER.warn(">>|  REFUSED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get()) + 1), deliveredMessages, waitingMessages, availableQueues);
@@ -135,8 +135,10 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
             int waitingMessages = sentMessage-deliveredMessages.get();
             int _availableQueues = concurrentConsumers-(sentMessage-deliveredMessages.get());
             int availableQueues = (0 < _availableQueues) ? _availableQueues : 0;
-                    LOGGER.debug(">>|  SENTED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), deliveredMessages, waitingMessages, availableQueues);
 
+            LOGGER.debug(">>|  SENT MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), deliveredMessages, waitingMessages, availableQueues);
+
+            // TODO:
             String response = queueService.sendMessage(queue, new Gson().toJson(message));
             if (response!=null) {
                 synchronized (allLostMessages) {
