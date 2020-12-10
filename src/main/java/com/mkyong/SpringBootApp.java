@@ -85,18 +85,19 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
                     }
                 }
             }
+
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
-        }
 
-        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {} ({});       REFUSED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
-        LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<<<<<<<<<<<<<<<");
-        for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
-            String strRequestTimeMilliss = allLostMessage.getValue();
-            long requestTimeMillis = Long.valueOf(strRequestTimeMilliss);
-            float timeToLive = (float) (System.currentTimeMillis() - requestTimeMillis) / 1000;
-            allLostMessage.setValue(String.valueOf(timeToLive));
-            LOGGER.error("{\"id\":{},\"time\":{}}", allLostMessage.getKey(), allLostMessage.getValue());
+            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {} ({});       REFUSED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
+            LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<<<<<<<<<<<<<<<");
+            for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
+                String strRequestTimeMilliss = allLostMessage.getValue();
+                long requestTimeMillis = Long.valueOf(strRequestTimeMilliss);
+                float timeToLive = (float) (System.currentTimeMillis() - requestTimeMillis) / 1000;
+                allLostMessage.setValue(String.valueOf(timeToLive));
+                LOGGER.error("{\"id\":{},\"time\":{}}", allLostMessage.getKey(), allLostMessage.getValue());
 
+            }
         }
     }
 
