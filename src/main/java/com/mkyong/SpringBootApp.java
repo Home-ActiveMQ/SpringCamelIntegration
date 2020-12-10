@@ -47,8 +47,9 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         final String queue = new BufferedReader(new InputStreamReader(System.in)).readLine();
 
         if (StringUtils.isNotBlank(queue)) {
-            while (test1QueueService.getSentMessage() < clientMessageProperties.getSentMessages()) {
-                test1QueueService.sendMessage(queue);
+            while (test1QueueService.getSentedMessages() < clientMessageProperties.getSentMessages()) {
+//                test1QueueService.sendMessage(queue);
+                test1QueueService.countSendMessage(queue);
                 Thread.sleep(speedSending);
             }
 

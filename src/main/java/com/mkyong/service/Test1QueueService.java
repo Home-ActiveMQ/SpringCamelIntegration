@@ -22,9 +22,9 @@ public class Test1QueueService {
 
     private Map<String, String> allLostMessages = new HashMap();
 
-    private int sentMessage = 0;
+    private int sentedMessages = 0;
 
-    private int discardedMessage = 0;
+    private int discardedMessages = 0;
 
     @Value("${jmsConfiguration.concurrentConsumers:0}")
     int concurrentConsumers;
@@ -32,42 +32,48 @@ public class Test1QueueService {
     @Autowired
     private QueueService queueService;
 
-    public int getSentMessage() {
-        return sentMessage;
+    public int getSentedMessages() {
+        return sentedMessages;
     }
 
-    public boolean sendMessage(String queue) {
-//        int waitingMessages = sentMessage-deliveredMessages.get();
-//        int _availableQueues = concurrentConsumers-(sentMessage-deliveredMessages.get());
-//        int availableQueues = (0 < _availableQueues) ? _availableQueues : 0;
+    public int getConcurrentConsumers() {
+        return concurrentConsumers;
+    }
 
+    public void countSendMessage(String queue) {
         long requestTimeMillis = System.currentTimeMillis();
         if (concurrentConsumers <= getWaitingMessages()) {
-            Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
-            LOGGER.warn(">>|  REFUSED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get()) + 1), deliveredMessages, getWaitingMessages(), getAvailableQueues());
-            discardedMessage++;
-            return false;
+            Message message = new Message(discardedMessages + sentedMessages + 1, requestTimeMillis, 0L);
+            LOGGER.warn(">>|  REFUSED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentedMessages, (deliveredMessages.get() + discardedMessages + (sentedMessages -deliveredMessages.get()) + 1), deliveredMessages, getWaitingMessages(), getAvailableQueues());
+            discardedMessages++;
         } else {
-            Message message = new Message(sentMessage+1, requestTimeMillis, 0L);
+            Message message = new Message(sentedMessages +1, requestTimeMillis, 0L);
             new Thread(
                     sendMessage(queue, message))
                     .start();
-            sentMessage++;
+            sentedMessages++;
             synchronized (allLostMessages) {
                 allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
             }
-            return true;
+        }
+    }
+
+    public void sendMessage(String queue) {
+        long requestTimeMillis = System.currentTimeMillis();
+
+        Message message = new Message(sentedMessages + 1, requestTimeMillis, 0L);
+        new Thread(
+                sendMessage(queue, message))
+                .start();
+        sentedMessages++;
+        synchronized (allLostMessages) {
+            allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
         }
     }
 
     private Runnable sendMessage(String queue, Message message) {
         return () -> {
-//            final int concurrentConsumers = 20;
-//            int waitingMessages = sentMessage-deliveredMessages.get();
-//            int _availableQueues = concurrentConsumers-(sentMessage-deliveredMessages.get());
-//            int availableQueues = (0 < _availableQueues) ? _availableQueues : 0;
-
-            LOGGER.debug(">>|  SENT MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), deliveredMessages, getWaitingMessages(), getAvailableQueues());
+            LOGGER.debug(">>|  SENT MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentedMessages, (deliveredMessages.get() + discardedMessages + (sentedMessages -deliveredMessages.get())), deliveredMessages, getWaitingMessages(), getAvailableQueues());
 
             // TODO:
             String response = queueService.sendMessage(queue, new Gson().toJson(message));
@@ -87,9 +93,7 @@ public class Test1QueueService {
     }
 
     public void allLostMessages() {
-//        int _availableQueues = concurrentConsumers-(sentMessage-deliveredMessages.get());
-//        int availableQueues = (0 < _availableQueues) ? _availableQueues : 0;
-        LOGGER.info(">>>>>>>>>> SENTED MESSAGES = {} ({})       REFUSED MESSAGES = {}       DELIVERED MESSAGES = {};       WAITING MESSAGES = {}       LOST MESSAGES = {}       AVAILABLE QUEUES = {} <<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, getWaitingMessages(), (sentMessage-deliveredMessages.get()), getAvailableQueues());
+        LOGGER.info(">>>>>>>>>> SENTED MESSAGES = {} ({})       REFUSED MESSAGES = {}       DELIVERED MESSAGES = {};       WAITING MESSAGES = {}       LOST MESSAGES = {}       AVAILABLE QUEUES = {} <<<<<<<<<<", sentedMessages, (deliveredMessages.get() + discardedMessages + (sentedMessages -deliveredMessages.get())), discardedMessages, deliveredMessages, getWaitingMessages(), (sentedMessages -deliveredMessages.get()), getAvailableQueues());
 
         LOGGER.error(">>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<");
         for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
@@ -103,11 +107,11 @@ public class Test1QueueService {
     }
 
     public int getWaitingMessages() {
-        return sentMessage-deliveredMessages.get();
+        return sentedMessages -deliveredMessages.get();
     }
 
     public int getAvailableQueues() {
-        int _availableQueues = concurrentConsumers-(sentMessage-deliveredMessages.get());
+        int _availableQueues = concurrentConsumers-(sentedMessages -deliveredMessages.get());
         return  (0 < _availableQueues) ? _availableQueues : 0;
     }
 }
