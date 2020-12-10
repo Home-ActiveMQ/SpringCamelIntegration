@@ -6,6 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,57 +36,46 @@ public class Test1QueueService {
     @Autowired
     private QueueService queueService;
 
-    public void countSendMessage(String queue) {
+    /**
+     * @see https://vertex-academy.com/tutorials/ru/java-8-completablefuture
+     */
+    public CompletableFuture<Message> countSendMessage(String queue) {
         long requestTimeMillis = System.currentTimeMillis();
         if (concurrentConsumers <= getWaitingMessages()) {
             Message message = new Message(discardedMessages + sentedMessages + 1, requestTimeMillis, 0L);
             LOGGER.warn(">>|  REFUSED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentedMessages, (deliveredMessages.get() + discardedMessages + (sentedMessages -deliveredMessages.get()) + 1), deliveredMessages, getWaitingMessages(), getAvailableQueues());
             discardedMessages++;
+            return CompletableFuture.supplyAsync(() -> message);
         } else {
             Message message = new Message(sentedMessages +1, requestTimeMillis, 0L);
-            new Thread(
-                    sendMessage(queue, message))
-                    .start();
+            CompletableFuture<Message> sendMessage = CompletableFuture.supplyAsync(() -> sendMessage(queue, message));
             sentedMessages++;
             synchronized (allLostMessages) {
                 allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
             }
+            return sendMessage;
         }
     }
 
-    @Deprecated
-    public void sendMessage(String queue) {
-        long requestTimeMillis = System.currentTimeMillis();
+    private Message sendMessage(String queue, Message message) {
+        LOGGER.debug(">>|  SENT MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentedMessages, (deliveredMessages.get() + discardedMessages + (sentedMessages -deliveredMessages.get())), deliveredMessages, getWaitingMessages(), getAvailableQueues());
 
-        Message message = new Message(sentedMessages + 1, requestTimeMillis, 0L);
-        new Thread(
-                sendMessage(queue, message))
-                .start();
-        sentedMessages++;
-        synchronized (allLostMessages) {
-            allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
-        }
-    }
-
-    private Runnable sendMessage(String queue, Message message) {
-        return () -> {
-            LOGGER.debug(">>|  SENT MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentedMessages, (deliveredMessages.get() + discardedMessages + (sentedMessages -deliveredMessages.get())), deliveredMessages, getWaitingMessages(), getAvailableQueues());
-
-            // TODO:
-            String response = queueService.sendMessage(queue, new Gson().toJson(message));
-            if (response!=null) {
-                synchronized (allLostMessages) {
-                    Message messageResponse = new Gson().fromJson(response, Message.class);
-                    messageResponse.setResponseTimeMillis(System.currentTimeMillis());
-                    LOGGER.debug("|<<   {}", messageResponse);
-                    deliveredMessages.incrementAndGet();
-                    allLostMessages.remove(String.valueOf(messageResponse.getId()));
-                }
-            } else {
-                LOGGER.error("|<<   {}", response);
-                lostMessages.incrementAndGet();
+        // TODO:
+        String response = queueService.sendMessage(queue, new Gson().toJson(message));
+        if (response!=null) {
+            synchronized (allLostMessages) {
+                Message messageResponse = new Gson().fromJson(response, Message.class);
+                messageResponse.setResponseTimeMillis(System.currentTimeMillis());
+                LOGGER.debug("|<<   {}", messageResponse);
+                deliveredMessages.incrementAndGet();
+                allLostMessages.remove(String.valueOf(messageResponse.getId()));
+                return messageResponse;
             }
-        };
+        } else {
+            LOGGER.error("|<<   {}", response);
+            lostMessages.incrementAndGet();
+        }
+        return null;
     }
 
     public int getSentedMessages() {
