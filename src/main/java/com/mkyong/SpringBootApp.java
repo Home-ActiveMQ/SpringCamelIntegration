@@ -68,32 +68,21 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
 
 
-
-
-
             while (sentMessage < clientMessageProperties.getSentMessages()) {
-//                long requestTimeMillis = System.currentTimeMillis();
-//                Thread.sleep(speedSending);
+                boolean isQueue = doQueue(queue);
+
+//                if (isQueue) {
+//                    LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {} ({});       REFUSED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
+//                    LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<<<<<<<<<<<<<<<");
+//                    for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
+//                        String strRequestTimeMilliss = allLostMessage.getValue();
+//                        long requestTimeMillis = Long.valueOf(strRequestTimeMilliss);
+//                        float timeToLive = (float) (System.currentTimeMillis() - requestTimeMillis) / 1000;
+//                        allLostMessage.setValue(String.valueOf(timeToLive));
+//                        LOGGER.error("{\"id\":{},\"time\":{}}", allLostMessage.getKey(), allLostMessage.getValue());
 //
-//                int waitingMessages = sentMessage-deliveredMessages.get();
-//                final int concurrentConsumers = 20;
-//                if (concurrentConsumers <= waitingMessages) {
-//                    Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
-//                    LOGGER.warn(">>|  REFUSED MESSAGE = {}       WAITING MESSAGES = {}       DELIVERED MESSAGES = {}", message, waitingMessages, deliveredMessages);
-//                    discardedMessage++;
-//                    continue;
-//                } else {
-//                    Message message = new Message(sentMessage+1, requestTimeMillis, 0L);
-//                    new Thread(
-//                            taskSendMessage(queue, message))
-//                            .start();
-//                    sentMessage++;
-//                    synchronized (allLostMessages) {
-//                        allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
 //                    }
 //                }
-
-                doQueue(queue);
             }
 
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
@@ -115,7 +104,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         }
     }
 
-    void doQueue(String queue) throws InterruptedException {
+    boolean doQueue(String queue) throws InterruptedException {
         long requestTimeMillis = System.currentTimeMillis();
         Thread.sleep(speedSending);
 
@@ -123,9 +112,9 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         final int concurrentConsumers = 20;
         if (concurrentConsumers <= waitingMessages) {
             Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
-            LOGGER.warn(">>|  REFUSED MESSAGE = {}       WAITING MESSAGES = {}       DELIVERED MESSAGES = {}", message, waitingMessages, deliveredMessages);
+            LOGGER.warn(">>|  REFUSED MESSAGE = {}       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, deliveredMessages, waitingMessages, (concurrentConsumers-(sentMessage-deliveredMessages.get())));
             discardedMessage++;
-            return;
+            return false;
         } else {
             Message message = new Message(sentMessage+1, requestTimeMillis, 0L);
             new Thread(
@@ -135,12 +124,18 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
             synchronized (allLostMessages) {
                 allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
             }
+            return true;
         }
     }
 
     private Runnable taskSendMessage(String queue, Message message) {
         return () -> {
-            LOGGER.debug(">>|  SENT MESSAGE = {}", message);
+//            LOGGER.debug(">>|  SENT MESSAGE = {}", message);
+
+            int waitingMessages = sentMessage-deliveredMessages.get();
+            final int concurrentConsumers = 20;
+            LOGGER.debug(">>|  SENTED MESSAGE = {}       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, deliveredMessages, waitingMessages, (concurrentConsumers-(sentMessage-deliveredMessages.get())));
+
             String response = queueService.sendMessage(queue, new Gson().toJson(message));
             if (response!=null) {
                 synchronized (allLostMessages) {
