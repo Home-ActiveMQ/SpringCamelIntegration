@@ -16,9 +16,7 @@ import org.springframework.context.annotation.PropertySource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import com.google.gson.Gson;
@@ -87,7 +85,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
 
-            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {} ({});       REFUSED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
+            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENTED MESSAGES = {} ({});       REFUSED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
             LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<<<<<<<<<<<<<<<");
             for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
                 String strRequestTimeMilliss = allLostMessage.getValue();
@@ -112,7 +110,7 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         final int concurrentConsumers = 20;
         if (concurrentConsumers <= waitingMessages) {
             Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
-            LOGGER.warn(">>|  REFUSED MESSAGE = {}       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, deliveredMessages, waitingMessages, (concurrentConsumers-(sentMessage-deliveredMessages.get())));
+            LOGGER.warn(">>|  REFUSED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get()) + 1), deliveredMessages, waitingMessages, (concurrentConsumers-(sentMessage-deliveredMessages.get())));
             discardedMessage++;
             return false;
         } else {
@@ -130,11 +128,9 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
     private Runnable taskSendMessage(String queue, Message message) {
         return () -> {
-//            LOGGER.debug(">>|  SENT MESSAGE = {}", message);
-
             int waitingMessages = sentMessage-deliveredMessages.get();
             final int concurrentConsumers = 20;
-            LOGGER.debug(">>|  SENTED MESSAGE = {}       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, deliveredMessages, waitingMessages, (concurrentConsumers-(sentMessage-deliveredMessages.get())));
+            LOGGER.debug(">>|  SENTED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), deliveredMessages, waitingMessages, (concurrentConsumers-(sentMessage-deliveredMessages.get())));
 
             String response = queueService.sendMessage(queue, new Gson().toJson(message));
             if (response!=null) {
