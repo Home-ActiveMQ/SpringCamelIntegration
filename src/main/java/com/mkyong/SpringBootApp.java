@@ -31,11 +31,17 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
     private static final Logger LOGGER = LogManager.getLogger(SpringBootApp.class);
 
-    private AtomicInteger deliveredMessages;
+    private AtomicInteger deliveredMessages = new AtomicInteger();
 
-    private AtomicInteger lostMessages;
+    private AtomicInteger lostMessages = new AtomicInteger();
 
     static Map<String, String> allLostMessages = new HashMap();
+
+    private int sentMessage = 0;
+
+    private int discardedMessage = 0;
+
+    private final long speedSending = 20L;
 
     @Autowired
     private ClientMessageProperties clientMessageProperties;
@@ -54,15 +60,22 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
     @Override
     public void run(String... args) throws InterruptedException, IOException {
-        deliveredMessages = new AtomicInteger();
-        lostMessages = new AtomicInteger();
-        int sentMessage = 0;
-        int discardedMessage = 0;
-        final long speedSending = 20L;
         System.out.print("Enter queue name: ");
         final String queue = new BufferedReader(new InputStreamReader(System.in)).readLine();
 
         if (StringUtils.isNotBlank(queue)) {
+
+
+
+//            deliveredMessages = new AtomicInteger();
+//            lostMessages = new AtomicInteger();
+//            int sentMessage = 0;
+//            int discardedMessage = 0;
+//            final long speedSending = 20L;
+
+
+
+
             while (sentMessage < clientMessageProperties.getSentMessages()) {
                 long requestTimeMillis = System.currentTimeMillis();
                 Thread.sleep(speedSending);
@@ -98,6 +111,10 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
                 LOGGER.error("{\"id\":{},\"time\":{}}", allLostMessage.getKey(), allLostMessage.getValue());
 
             }
+
+
+
+
         }
     }
 
