@@ -26,19 +26,13 @@ public class Test1QueueService {
 
     private int discardedMessages = 0;
 
+    private final long toDelayChecking = 100L;
+
     @Value("${jmsConfiguration.concurrentConsumers:0}")
     int concurrentConsumers;
 
     @Autowired
     private QueueService queueService;
-
-    public int getSentedMessages() {
-        return sentedMessages;
-    }
-
-    public int getConcurrentConsumers() {
-        return concurrentConsumers;
-    }
 
     public void countSendMessage(String queue) {
         long requestTimeMillis = System.currentTimeMillis();
@@ -58,6 +52,7 @@ public class Test1QueueService {
         }
     }
 
+    @Deprecated
     public void sendMessage(String queue) {
         long requestTimeMillis = System.currentTimeMillis();
 
@@ -92,7 +87,37 @@ public class Test1QueueService {
         };
     }
 
-    public void allLostMessages() {
+    public int getSentedMessages() {
+        return sentedMessages;
+    }
+
+    public void getAllLostMessages() {
+        while (!isAvailableQueues()) {
+            try {
+                Thread.sleep(toDelayChecking);
+            } catch (InterruptedException e) {}
+        }
+        allLostMessages();
+    }
+
+    public int getWaitingMessages() {
+        return sentedMessages -deliveredMessages.get();
+    }
+
+    public int getAvailableQueues() {
+        int _availableQueues = concurrentConsumers-(sentedMessages -deliveredMessages.get());
+        return  (0 < _availableQueues) ? _availableQueues : 0;
+    }
+
+    public boolean isAvailableQueues() {
+        return ((getWaitingMessages() == 0) && (getAvailableQueues() == getConcurrentConsumers())) ? true : false;
+    }
+
+    public int getConcurrentConsumers() {
+        return concurrentConsumers;
+    }
+
+    private void allLostMessages() {
         LOGGER.info(">>>>>>>>>> SENTED MESSAGES = {} ({})       REFUSED MESSAGES = {}       DELIVERED MESSAGES = {};       WAITING MESSAGES = {}       LOST MESSAGES = {}       AVAILABLE QUEUES = {} <<<<<<<<<<", sentedMessages, (deliveredMessages.get() + discardedMessages + (sentedMessages -deliveredMessages.get())), discardedMessages, deliveredMessages, getWaitingMessages(), (sentedMessages -deliveredMessages.get()), getAvailableQueues());
 
         LOGGER.error(">>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<");
@@ -104,14 +129,5 @@ public class Test1QueueService {
             LOGGER.error("{\"id\":{},\"time\":{}}", allLostMessage.getKey(), allLostMessage.getValue());
 
         }
-    }
-
-    public int getWaitingMessages() {
-        return sentedMessages -deliveredMessages.get();
-    }
-
-    public int getAvailableQueues() {
-        int _availableQueues = concurrentConsumers-(sentedMessages -deliveredMessages.get());
-        return  (0 < _availableQueues) ? _availableQueues : 0;
     }
 }

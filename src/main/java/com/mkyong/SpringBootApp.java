@@ -47,14 +47,97 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         final String queue = new BufferedReader(new InputStreamReader(System.in)).readLine();
 
         if (StringUtils.isNotBlank(queue)) {
-            while (test1QueueService.getSentedMessages() < clientMessageProperties.getSentMessages()) {
-//                test1QueueService.sendMessage(queue);
-                test1QueueService.countSendMessage(queue);
-                Thread.sleep(speedSending);
-            }
+//            while (test1QueueService.getSentedMessages() < clientMessageProperties.getSentMessages()) {
+////                test1QueueService.sendMessage(queue);
+//                test1QueueService.countSendMessage(queue);
+//                Thread.sleep(speedSending);
+//            }
+//
+//            Thread.sleep(clientMessageProperties.getAllResponseDelay());
+//            test1QueueService.allLostMessages();
 
-            Thread.sleep(clientMessageProperties.getAllResponseDelay());
-            test1QueueService.allLostMessages();
+
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+
+            test1QueueService.getAllLostMessages();
+
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+            test1QueueService.countSendMessage(queue);
+            Thread.sleep(speedSending);
+
+            test1QueueService.getAllLostMessages();
         }
     }
 }
