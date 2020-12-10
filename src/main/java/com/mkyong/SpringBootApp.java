@@ -81,6 +81,8 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 //
 //                    }
 //                }
+
+                Thread.sleep(speedSending);
             }
 
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
@@ -104,13 +106,14 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
     boolean doQueue(String queue) throws InterruptedException {
         long requestTimeMillis = System.currentTimeMillis();
-        Thread.sleep(speedSending);
-
-        int waitingMessages = sentMessage-deliveredMessages.get();
+//        Thread.sleep(speedSending);
         final int concurrentConsumers = 20;
+        int waitingMessages = sentMessage-deliveredMessages.get();
+        int _availableQueues = concurrentConsumers-(sentMessage-deliveredMessages.get());
+        int availableQueues = (0 < _availableQueues) ? _availableQueues : 0;
         if (concurrentConsumers <= waitingMessages) {
             Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
-            LOGGER.warn(">>|  REFUSED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get()) + 1), deliveredMessages, waitingMessages, (concurrentConsumers-(sentMessage-deliveredMessages.get())));
+            LOGGER.warn(">>|  REFUSED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get()) + 1), deliveredMessages, waitingMessages, availableQueues);
             discardedMessage++;
             return false;
         } else {
@@ -128,9 +131,11 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
     private Runnable taskSendMessage(String queue, Message message) {
         return () -> {
-            int waitingMessages = sentMessage-deliveredMessages.get();
             final int concurrentConsumers = 20;
-            LOGGER.debug(">>|  SENTED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), deliveredMessages, waitingMessages, (concurrentConsumers-(sentMessage-deliveredMessages.get())));
+            int waitingMessages = sentMessage-deliveredMessages.get();
+            int _availableQueues = concurrentConsumers-(sentMessage-deliveredMessages.get());
+            int availableQueues = (0 < _availableQueues) ? _availableQueues : 0;
+                    LOGGER.debug(">>|  SENTED MESSAGE = {}       SENTED MESSAGES = {} ({})       DELIVERED MESSAGES = {}       WAITING MESSAGES = {}       AVAILABLE QUEUES = {}", message, sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), deliveredMessages, waitingMessages, availableQueues);
 
             String response = queueService.sendMessage(queue, new Gson().toJson(message));
             if (response!=null) {
