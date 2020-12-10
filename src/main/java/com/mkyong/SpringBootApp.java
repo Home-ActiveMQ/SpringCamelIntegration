@@ -62,45 +62,13 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
         final String queue = new BufferedReader(new InputStreamReader(System.in)).readLine();
 
         if (StringUtils.isNotBlank(queue)) {
-
-
-
-
             while (sentMessage < clientMessageProperties.getSentMessages()) {
                 boolean isSendMessage = sendMessage(queue);
-
-//                if (isSendMessage) {
-//                    LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> SENT MESSAGES = {} ({});       REFUSED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
-//                    LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<<<<<<<<<<<<<<<");
-//                    for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
-//                        String strRequestTimeMilliss = allLostMessage.getValue();
-//                        long requestTimeMillis = Long.valueOf(strRequestTimeMilliss);
-//                        float timeToLive = (float) (System.currentTimeMillis() - requestTimeMillis) / 1000;
-//                        allLostMessage.setValue(String.valueOf(timeToLive));
-//                        LOGGER.error("{\"id\":{},\"time\":{}}", allLostMessage.getKey(), allLostMessage.getValue());
-//
-//                    }
-//                }
-
                 Thread.sleep(speedSending);
             }
 
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
-
-//            LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>> SENTED MESSAGES = {} ({});       REFUSED MESSAGES = {};       DELIVERED MESSAGES = {};       LOST MESSAGES = {}; <<<<<<<<<<<<<<<<<<<<<<<<", sentMessage, (deliveredMessages.get() + discardedMessage + (sentMessage-deliveredMessages.get())), discardedMessage, deliveredMessages, (sentMessage-deliveredMessages.get()));
-//            LOGGER.error(">>>>>>>>>>>>>>>>>>>>>>>> ALL LOST MESSAGES <<<<<<<<<<<<<<<<<<<<<<<<");
-//            for (Map.Entry<String, String> allLostMessage:  allLostMessages.entrySet()) {
-//                String strRequestTimeMilliss = allLostMessage.getValue();
-//                long requestTimeMillis = Long.valueOf(strRequestTimeMilliss);
-//                float timeToLive = (float) (System.currentTimeMillis() - requestTimeMillis) / 1000;
-//                allLostMessage.setValue(String.valueOf(timeToLive));
-//                LOGGER.error("{\"id\":{},\"time\":{}}", allLostMessage.getKey(), allLostMessage.getValue());
-//
-//            }
-
             lostMessages();
-
-
         }
     }
 
