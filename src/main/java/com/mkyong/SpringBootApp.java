@@ -67,36 +67,33 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
 
 
-//            deliveredMessages = new AtomicInteger();
-//            lostMessages = new AtomicInteger();
-//            int sentMessage = 0;
-//            int discardedMessage = 0;
-//            final long speedSending = 20L;
 
 
 
 
             while (sentMessage < clientMessageProperties.getSentMessages()) {
-                long requestTimeMillis = System.currentTimeMillis();
-                Thread.sleep(speedSending);
+//                long requestTimeMillis = System.currentTimeMillis();
+//                Thread.sleep(speedSending);
+//
+//                int waitingMessages = sentMessage-deliveredMessages.get();
+//                final int concurrentConsumers = 20;
+//                if (concurrentConsumers <= waitingMessages) {
+//                    Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
+//                    LOGGER.warn(">>|  REFUSED MESSAGE = {}       WAITING MESSAGES = {}       DELIVERED MESSAGES = {}", message, waitingMessages, deliveredMessages);
+//                    discardedMessage++;
+//                    continue;
+//                } else {
+//                    Message message = new Message(sentMessage+1, requestTimeMillis, 0L);
+//                    new Thread(
+//                            taskSendMessage(queue, message))
+//                            .start();
+//                    sentMessage++;
+//                    synchronized (allLostMessages) {
+//                        allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
+//                    }
+//                }
 
-                int waitingMessages = sentMessage-deliveredMessages.get();
-                final int concurrentConsumers = 20;
-                if (concurrentConsumers <= waitingMessages) {
-                    Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
-                    LOGGER.warn(">>|  REFUSED MESSAGE = {}       WAITING MESSAGES = {}       DELIVERED MESSAGES = {}", message, waitingMessages, deliveredMessages);
-                    discardedMessage++;
-                    continue;
-                } else {
-                    Message message = new Message(sentMessage+1, requestTimeMillis, 0L);
-                    new Thread(
-                            taskSendMessage(queue, message))
-                            .start();
-                    sentMessage++;
-                    synchronized (allLostMessages) {
-                        allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
-                    }
-                }
+                doQueue(queue);
             }
 
             Thread.sleep(clientMessageProperties.getAllResponseDelay());
@@ -115,6 +112,29 @@ public class SpringBootApp extends SpringBootServletInitializer implements Comma
 
 
 
+        }
+    }
+
+    void doQueue(String queue) throws InterruptedException {
+        long requestTimeMillis = System.currentTimeMillis();
+        Thread.sleep(speedSending);
+
+        int waitingMessages = sentMessage-deliveredMessages.get();
+        final int concurrentConsumers = 20;
+        if (concurrentConsumers <= waitingMessages) {
+            Message message = new Message(sentMessage+1+discardedMessage, requestTimeMillis, 0L);
+            LOGGER.warn(">>|  REFUSED MESSAGE = {}       WAITING MESSAGES = {}       DELIVERED MESSAGES = {}", message, waitingMessages, deliveredMessages);
+            discardedMessage++;
+            return;
+        } else {
+            Message message = new Message(sentMessage+1, requestTimeMillis, 0L);
+            new Thread(
+                    taskSendMessage(queue, message))
+                    .start();
+            sentMessage++;
+            synchronized (allLostMessages) {
+                allLostMessages.put(String.valueOf(message.getId()), String.valueOf(requestTimeMillis));
+            }
         }
     }
 
