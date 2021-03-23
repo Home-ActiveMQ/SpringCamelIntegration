@@ -6,14 +6,18 @@ import com.mkyong.data.Developer;
 import com.mkyong.data.Message;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 @Component
 public class Test1Processor implements Processor {
@@ -50,6 +54,9 @@ public class Test1Processor implements Processor {
 
 			try {
 				save(new Developer(DEVELOPERS[0][0], DEVELOPERS[0][1], DEVELOPERS[0][2], Integer.valueOf(DEVELOPERS[0][3]), Integer.valueOf(DEVELOPERS[0][4])));
+				save(new Developer(DEVELOPERS[1][0], DEVELOPERS[1][1], DEVELOPERS[1][2], Integer.valueOf(DEVELOPERS[1][3]), Integer.valueOf(DEVELOPERS[1][4])));
+				save(new Developer(DEVELOPERS[2][0], DEVELOPERS[2][1], DEVELOPERS[2][2], Integer.valueOf(DEVELOPERS[2][3]), Integer.valueOf(DEVELOPERS[2][4])));
+				for (Developer developer: listDevelopers(1)) LOGGER.info("|<<   {}", developer);
 			} catch (Throwable e) {
 				LOGGER.error("|<<   {}", e.getLocalizedMessage()); // throw new ExceptionInInitializerError(e);
 			}
@@ -72,5 +79,18 @@ public class Test1Processor implements Processor {
 		transaction.commit();
 
 		session.close();
+	}
+
+	public List<Developer> listDevelopers(final int minExperience) {
+		Session session = sessionFactory.openSession();
+
+		Transaction transaction = session.beginTransaction();
+		Criteria criteria = session.createCriteria(Developer.class);
+		criteria.add(Restrictions.gt("experience", minExperience));
+		List<Developer> developers = criteria.list();
+		transaction.commit();
+
+		session.close();
+		return developers;
 	}
 }
