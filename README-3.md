@@ -2,6 +2,9 @@
 * https://coderoad.ru/23214454/org-hibernate-MappingException-неизвестная-сущность-annotations-Users
 * https://overcoder.net/q/1288149/транзакция-не-была-успешно-запущена-в-то-время-как-txcommit-окружен-условием-if
 
+
+* `для выполнения теста`: [http://localhost:8080/queue/test1](http://localhost:8080/queue/test1)
+
 ```text
 Hibernate: 
     create table tbl_developers (
