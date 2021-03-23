@@ -34,6 +34,7 @@ public class QueueController {
 	private QueueService queueService;
 
     /**
+     * http://localhost:8080/queue/
      * http://localhost:8080/SpringCamelIntegration-0.0.1-SNAPSHOT/queue/
      */
     @RequestMapping("/")
@@ -42,6 +43,7 @@ public class QueueController {
     }
 
 	/**
+     * http://localhost:8080/queue/test1
 	 * http://localhost:8080/SpringCamelIntegration-0.0.1-SNAPSHOT/queue/test1
 	 */
 	@RequestMapping("/{queue}")

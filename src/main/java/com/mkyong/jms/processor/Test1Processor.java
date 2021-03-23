@@ -2,10 +2,15 @@ package com.mkyong.jms.processor;
 
 import com.google.gson.Gson;
 import com.mkyong.config.properties.ClientMessageProperties;
+import com.mkyong.data.Developer;
 import com.mkyong.data.Message;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +20,18 @@ public class Test1Processor implements Processor {
 
 	private static final Logger LOGGER = LogManager.getLogger(Test1Processor.class);
 
+	private String[][]  DEVELOPERS = {
+			{"Сергей", "Ветров"      , "Java Developer",  "6", "2400"},
+			{"Олег"  , "Мантров"     , "C++ Developer" , "10", "2300"},
+			{"Остап" , "Бендер"      , "C# Developer"  ,  "5", "2200"},
+			{"Киса"  , "Воробьянинов", "PHP Developer" ,  "4", "2500"}};
+
 	@Autowired
 	private ClientMessageProperties clientMessageProperties;
+
+	@Autowired
+	@Qualifier("h2SessionFactory")
+	private SessionFactory sessionFactory;
 
 	@Override
 	public void process(Exchange exchange) throws Exception {
@@ -28,14 +43,34 @@ public class Test1Processor implements Processor {
 
 		Object obj = exchange.getIn().getBody();
 		if (obj != null) {
-			Message message = new Gson().fromJson(String.valueOf(obj), Message.class);
+			String message = String.valueOf(obj); //Message message = new Gson().fromJson(String.valueOf(obj), Message.class);
 			LOGGER.debug(" >>|  {}", message);
 
 			Thread.sleep(clientMessageProperties.getResponseDelay());
 
-			message = new Gson().fromJson(String.valueOf(obj), Message.class);
+			try {
+				save(new Developer(DEVELOPERS[0][0], DEVELOPERS[0][1], DEVELOPERS[0][2], Integer.valueOf(DEVELOPERS[0][3]), Integer.valueOf(DEVELOPERS[0][4])));
+			} catch (Throwable e) {
+				LOGGER.error("|<<   {}", e.getLocalizedMessage()); // throw new ExceptionInInitializerError(e);
+			}
+
+//			message = new Gson().fromJson(String.valueOf(obj), Message.class);
 			LOGGER.debug("|<<   {}", message);
 			exchange.getIn().setBody(obj);
 		}
+	}
+
+	/**
+	 * @see https://coderoad.ru/23214454/org-hibernate-MappingException-неизвестная-сущность-annotations-Users
+	 *      https://overcoder.net/q/1288149/транзакция-не-была-успешно-запущена-в-то-время-как-txcommit-окружен-условием-if
+	 */
+	private void save(Developer developer) {
+		Session session = sessionFactory.openSession();
+
+		Transaction transaction = session.beginTransaction();
+		session.save(developer);
+		transaction.commit();
+
+		session.close();
 	}
 }
