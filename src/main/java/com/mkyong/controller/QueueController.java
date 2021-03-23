@@ -36,6 +36,7 @@ public class QueueController {
     /**
      * http://localhost:8080/queue/
      * http://localhost:8080/SpringCamelIntegration-0.0.1-SNAPSHOT/queue/
+     * http://localhost:8080/SpringCamelIntegration-0.0.1-SNAPSHOT/queue/test1
      */
     @RequestMapping("/")
     public ResponseEntity<String> index() {
