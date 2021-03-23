@@ -81,7 +81,7 @@ public class Test1Processor implements Processor {
 		session.close();
 	}
 
-	public List<Developer> listDevelopers(final int minExperience) {
+	private List<Developer> listDevelopers(final int minExperience) {
 		Session session = sessionFactory.openSession();
 
 		Transaction transaction = session.beginTransaction();
